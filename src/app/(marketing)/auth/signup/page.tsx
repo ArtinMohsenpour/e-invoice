@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2, CheckCircle2, ShieldCheck } from "lucide-react";
+import { signupAction } from "@/app/actions/auth";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -13,32 +12,22 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const supabase = createClient();
-  const router = useRouter();
-
   async function handleSignUp(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    const { error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          company_name: companyName,
-        },
-      },
-    });
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("companyName", companyName);
 
-    if (signUpError) {
-      setError(signUpError.message);
+    const result = await signupAction(formData);
+
+    if (result?.error) {
+      setError(result.error);
       setLoading(false);
-      return;
     }
-
-    router.push("/dashboard");
-    router.refresh();
   }
 
   return (
@@ -57,27 +46,32 @@ export default function SignUpPage() {
             </div>
 
             {error && (
-              <div className="mb-6 rounded-md bg-red-50 dark:bg-red-900/20 p-4 border border-error/20">
-                <div className="flex">
-                  <div className="shrink-0">
+              <div className="mb-6 rounded-lg bg-red-50 dark:bg-red-950/30 p-4 border border-red-200 dark:border-red-900/50 animate-in fade-in slide-in-from-top-1 duration-300">
+                <div className="flex items-start gap-3">
+                  <div className="shrink-0 mt-0.5">
                     <svg
-                      className="h-5 w-5 text-error"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-red-600 dark:text-red-400"
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                        clipRule="evenodd"
-                      />
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
                     </svg>
                   </div>
-                  <div className="ml-3">
-                    <h3 className="text-sm font-medium text-error">
-                      There was an error
+                  <div className="flex-1">
+                    <h3 className="text-sm font-semibold text-red-800 dark:text-red-200">
+                      Authentication Error
                     </h3>
-                    <div className="mt-2 text-sm text-error/90">
-                      <p>{error}</p>
+                    <div className="mt-1 text-sm text-red-700 dark:text-red-300/90 leading-relaxed">
+                      {error}
                     </div>
                   </div>
                 </div>
@@ -90,7 +84,7 @@ export default function SignUpPage() {
                   htmlFor="companyName"
                   className="block text-sm font-medium leading-6 text-foreground"
                 >
-                  Company Name
+                  Company or Legal Name
                 </label>
                 <div className="mt-2">
                   <input
@@ -102,8 +96,11 @@ export default function SignUpPage() {
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
                     className="block w-full rounded-md border border-border bg-input-bg px-3 py-2 text-foreground shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent sm:text-sm sm:leading-6 transition-colors"
-                    placeholder="Acme GmbH"
+                    placeholder="Telekom GmbH"
                   />
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Freelancers should enter their full legal name.
+                  </p>
                 </div>
               </div>
 

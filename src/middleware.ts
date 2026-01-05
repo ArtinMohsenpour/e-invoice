@@ -59,15 +59,6 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 3. Root Route: /
-  // Optional: Decide if root should redirect to dashboard if logged in
-  if (request.nextUrl.pathname === "/") {
-    if (user) {
-      url.pathname = "/dashboard";
-      return NextResponse.redirect(url);
-    }
-  }
-
   return response;
 }
 

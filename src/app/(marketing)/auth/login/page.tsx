@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2, CheckCircle2, ShieldCheck } from "lucide-react";
+import { loginAction } from "@/app/actions/auth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,27 +11,23 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const supabase = createClient();
-  const router = useRouter();
-
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
 
-    if (signInError) {
-      setError(signInError.message);
+    const result = await loginAction(formData);
+
+    // If result is returned, it means there was an error
+    // (Redirects throw errors that are caught by Next.js, so they don't return here)
+    if (result?.error) {
+      setError(result.error);
       setLoading(false);
-      return;
     }
-
-    router.push("/dashboard");
-    router.refresh();
   }
 
   return (

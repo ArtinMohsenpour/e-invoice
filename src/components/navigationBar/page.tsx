@@ -2,20 +2,15 @@
 
 import Link from "next/link";
 import { useAuthStore } from "@/lib/store/auth-store";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import { LogOut, User } from "lucide-react";
+import { signOutAction } from "@/app/actions/auth";
 
 export default function Navbar() {
   const { profile, signOut } = useAuthStore();
-  const supabase = createClient();
-  const router = useRouter();
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
     signOut();
-    router.push("/auth/login");
-    router.refresh();
+    await signOutAction();
   };
 
   return (
@@ -61,7 +56,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/auth/signup"
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 dark:focus:ring-offset-slate-900"
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600/20 rounded-md hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 dark:focus:ring-offset-slate-900"
               >
                 Sign Up
               </Link>
