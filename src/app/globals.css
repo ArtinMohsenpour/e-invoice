@@ -7,6 +7,7 @@
   */
   --background: #ffffff; /* Pure White */
   --foreground: #0f172a; /* Slate 900 */
+  --muted-foreground: #64748b; /* Slate 500 */
 
   /* Brand: "Royal Azure" */
   --brand: #2563eb; /* Blue 600 */
@@ -30,6 +31,7 @@
     */
     --background: #0b1120; /* Rich Deep Navy */
     --foreground: #f1f5f9; /* Slate 100 */
+    --muted-foreground: #94a3b8; /* Slate 400 */
 
     --brand: #3b82f6; /* Blue 500 */
 
@@ -42,6 +44,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
   --color-accent: var(--accent);
