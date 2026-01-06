@@ -14,7 +14,7 @@
   --brand-foreground: #ffffff;
 
   /* Accent: "Success Green" */
-  --accent: #10b981; /* Emerald 500 */
+  --accent: #0d9488; /* Emerald 500 */
 
   /* UI Elements - Adjusted for better Light Mode contrast */
   --surface: #e7eaee; /* Slate 100 - Distinct from white background */
@@ -34,6 +34,8 @@
     --muted-foreground: #94a3b8; /* Slate 400 */
 
     --brand: #3b82f6; /* Blue 500 */
+
+    --accent: #14b8a6;
 
     --surface: #1e293b; /* Slate 800 */
     --border: #334155; /* Slate 700 */

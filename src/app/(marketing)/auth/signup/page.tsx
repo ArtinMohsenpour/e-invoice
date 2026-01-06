@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Loader2, CheckCircle2, ShieldCheck } from "lucide-react";
 import { signupAction } from "@/app/actions/auth";
+import { signupSchema, type SignupInput } from "@/lib/validations/auth";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -11,21 +12,38 @@ export default function SignUpPage() {
   const [companyName, setCompanyName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<keyof SignupInput, string>>
+  >({});
 
   async function handleSignUp(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setFieldErrors({});
+
+    const result = signupSchema.safeParse({ email, password, companyName });
+
+    if (!result.success) {
+      const formattedErrors: Partial<Record<keyof SignupInput, string>> = {};
+      result.error.issues.forEach((issue) => {
+        const path = issue.path[0] as keyof SignupInput;
+        formattedErrors[path] = issue.message;
+      });
+      setFieldErrors(formattedErrors);
+      setLoading(false);
+      return;
+    }
 
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
     formData.append("companyName", companyName);
 
-    const result = await signupAction(formData);
+    const actionResult = await signupAction(formData);
 
-    if (result?.error) {
-      setError(result.error);
+    if (actionResult?.error) {
+      setError(actionResult.error);
       setLoading(false);
     }
   }
@@ -46,7 +64,7 @@ export default function SignUpPage() {
             </div>
 
             {error && (
-              <div className="mb-6 rounded-lg bg-red-50 dark:bg-red-950/30 p-4 border border-red-200 dark:border-red-900/50 animate-in fade-in slide-in-from-top-1 duration-300">
+              <div className="mb-6 rounded-lg bg-red-50 p-4 text-sm text-red-800 border border-red-100 dark:bg-red-900/10 dark:text-red-300 dark:border-red-900/30 animate-in fade-in slide-in-from-top-1">
                 <div className="flex items-start gap-3">
                   <div className="shrink-0 mt-0.5">
                     <svg
@@ -59,26 +77,24 @@ export default function SignUpPage() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="text-red-600 dark:text-red-400"
+                      className="text-red-500"
                     >
                       <circle cx="12" cy="12" r="10" />
                       <line x1="12" y1="8" x2="12" y2="12" />
                       <line x1="12" y1="16" x2="12.01" y2="16" />
                     </svg>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-sm font-semibold text-red-800 dark:text-red-200">
-                      Authentication Error
-                    </h3>
-                    <div className="mt-1 text-sm text-red-700 dark:text-red-300/90 leading-relaxed">
-                      {error}
-                    </div>
+                  <div>
+                    <h3 className="font-semibold">Unable to create account</h3>
+                    <p className="mt-1 text-red-700 dark:text-red-400">
+                      Please check your details and try again.
+                    </p>
                   </div>
                 </div>
               </div>
             )}
 
-            <form onSubmit={handleSignUp} className="space-y-6">
+            <form onSubmit={handleSignUp} className="space-y-6" noValidate>
               <div>
                 <label
                   htmlFor="companyName"
@@ -93,14 +109,33 @@ export default function SignUpPage() {
                     type="text"
                     autoComplete="organization"
                     required
+                    maxLength={100}
                     value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                    className="block w-full rounded-md border border-border bg-input-bg px-3 py-2 text-foreground shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent sm:text-sm sm:leading-6 transition-colors"
+                    onChange={(e) => {
+                      setCompanyName(e.target.value);
+                      if (fieldErrors.companyName) {
+                        setFieldErrors((prev) => ({
+                          ...prev,
+                          companyName: undefined,
+                        }));
+                      }
+                    }}
+                    className={`block w-full rounded-md border ${
+                      fieldErrors.companyName
+                        ? "border-red-500 focus:ring-red-500"
+                        : "border-border focus:ring-brand"
+                    } bg-input-bg px-3 py-2 text-foreground shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm sm:leading-6 transition-colors`}
                     placeholder="Telekom GmbH"
                   />
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Freelancers should enter their full legal name.
-                  </p>
+                  {fieldErrors.companyName ? (
+                    <p className="mt-1 text-sm text-red-500">
+                      {fieldErrors.companyName}
+                    </p>
+                  ) : (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Freelancers should enter their full legal name.
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -118,11 +153,29 @@ export default function SignUpPage() {
                     type="email"
                     autoComplete="email"
                     required
+                    maxLength={100}
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full rounded-md border border-border bg-input-bg px-3 py-2 text-foreground shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent sm:text-sm sm:leading-6 transition-colors"
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (fieldErrors.email) {
+                        setFieldErrors((prev) => ({
+                          ...prev,
+                          email: undefined,
+                        }));
+                      }
+                    }}
+                    className={`block w-full rounded-md border ${
+                      fieldErrors.email
+                        ? "border-red-500 focus:ring-red-500"
+                        : "border-border focus:ring-brand"
+                    } bg-input-bg px-3 py-2 text-foreground shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm sm:leading-6 transition-colors`}
                     placeholder="name@company.com"
                   />
+                  {fieldErrors.email && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {fieldErrors.email}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -140,11 +193,29 @@ export default function SignUpPage() {
                     type="password"
                     autoComplete="new-password"
                     required
+                    maxLength={100}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full rounded-md border border-border bg-input-bg px-3 py-2 text-foreground shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent sm:text-sm sm:leading-6 transition-colors"
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (fieldErrors.password) {
+                        setFieldErrors((prev) => ({
+                          ...prev,
+                          password: undefined,
+                        }));
+                      }
+                    }}
+                    className={`block w-full rounded-md border ${
+                      fieldErrors.password
+                        ? "border-red-500 focus:ring-red-500"
+                        : "border-border focus:ring-brand"
+                    } bg-input-bg px-3 py-2 text-foreground shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm sm:leading-6 transition-colors`}
                     placeholder="••••••••"
                   />
+                  {fieldErrors.password && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {fieldErrors.password}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -210,7 +281,7 @@ export default function SignUpPage() {
             {/* Abstract Decorative Pattern */}
             <div className="absolute inset-0 bg-[radial-gradient(#0b1120_1px,transparent_1px)] dark:bg-[radial-gradient(#94a3b8_1px,transparent_1px)] bg-size-[16px_16px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20"></div>
 
-            <div className="relative z-10 flex h-full flex-col justify-center px-16 text-foreground">
+            <div className="relative z-10 flex h-full flex-col justify-start lg:pt-22  px-16 text-foreground">
               <div className="mb-8">
                 <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand/10 text-brand mb-6">
                   <ShieldCheck className="h-6 w-6" />
@@ -239,7 +310,7 @@ export default function SignUpPage() {
                 </li>
               </ul>
 
-              <div className="mt-12 p-6 bg-background/60 backdrop-blur-sm rounded-2xl border border-border shadow-sm">
+              <div className="mt-12 max-w-fit p-6 bg-background/60 backdrop-blur-sm rounded-2xl border border-border shadow-sm">
                 <div className="flex items-center gap-4 mb-3">
                   <div className="h-10 w-10 rounded-full bg-brand/10 flex items-center justify-center text-brand font-bold ring-1 ring-brand/20">
                     JS

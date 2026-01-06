@@ -4,9 +4,17 @@ import Link from "next/link";
 import { useAuthStore } from "@/lib/store/auth-store";
 import { LogOut, User } from "lucide-react";
 import { signOutAction } from "@/app/actions/auth";
+import { usePathname } from "next/navigation";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export default function Navbar() {
   const { profile, signOut } = useAuthStore();
+  const pathname = usePathname();
 
   const handleSignOut = async () => {
     signOut();
@@ -21,10 +29,13 @@ export default function Navbar() {
             E-Invoice
           </Link>
         </div>
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-4">
           <Link
             href="/"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className={cn(
+              "text-sm px-4 py-2 rounded-md  hover:bg-muted-foreground/20 font-medium transition-colors hover:text-foreground",
+              pathname === "/" ? "text-foreground" : "text-muted-foreground"
+            )}
           >
             Home
           </Link>
@@ -33,34 +44,44 @@ export default function Navbar() {
             <div className="flex items-center gap-4">
               <Link
                 href="/dashboard"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+                className="text-sm px-4 py-2 rounded-md hover:bg-muted-foreground/20 hover:text-white font-medium text-muted-foreground  transition-colors flex items-center gap-2"
               >
                 <User className="w-4 h-4" />
                 Dashboard
               </Link>
               <button
                 onClick={handleSignOut}
-                className="text-sm font-medium text-red-500 hover:text-red-600 transition-colors flex items-center gap-2"
+                className="text-sm px-4 py-2 cursor-pointer rounded-md hover:bg-muted-foreground/20 font-medium text-red-500 hover:text-red-600 transition-colors flex items-center gap-2"
               >
                 <LogOut className="w-4 h-4" />
                 Logout
               </button>
             </div>
           ) : (
-            <>
+            <div className="flex items-center gap-2">
               <Link
                 href="/auth/login"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className={cn(
+                  "px-4 py-2 text-sm font-medium rounded-md transition-colors",
+                  pathname === "/auth/login"
+                    ? "bg-brand text-brand-foreground shadow-sm"
+                    : "text-muted-foreground hover:bg-muted-foreground/20 hover:text-white"
+                )}
               >
                 Login
               </Link>
               <Link
                 href="/auth/signup"
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600/20 rounded-md hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 dark:focus:ring-offset-slate-900"
+                className={cn(
+                  "px-4 py-2 text-sm font-medium rounded-md transition-colors",
+                  pathname === "/auth/signup"
+                    ? "bg-brand text-brand-foreground shadow-sm"
+                    : "text-muted-foreground hover:bg-muted-foreground/20 hover:text-white"
+                )}
               >
                 Sign Up
               </Link>
-            </>
+            </div>
           )}
         </div>
       </div>

@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { loginSchema, signupSchema } from "@/lib/validations/auth";
 
 export async function signOutAction() {
   const supabase = await createClient();
@@ -11,8 +12,18 @@ export async function signOutAction() {
 }
 
 export async function loginAction(formData: FormData) {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  const rawData = {
+    email: formData.get("email"),
+    password: formData.get("password"),
+  };
+
+  const validationResult = loginSchema.safeParse(rawData);
+
+  if (!validationResult.success) {
+    return { error: validationResult.error.errors[0].message };
+  }
+
+  const { email, password } = validationResult.data;
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -29,9 +40,19 @@ export async function loginAction(formData: FormData) {
 }
 
 export async function signupAction(formData: FormData) {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const companyName = formData.get("companyName") as string;
+  const rawData = {
+    email: formData.get("email"),
+    password: formData.get("password"),
+    companyName: formData.get("companyName"),
+  };
+
+  const validationResult = signupSchema.safeParse(rawData);
+
+  if (!validationResult.success) {
+    return { error: validationResult.error.errors[0].message };
+  }
+
+  const { email, password, companyName } = validationResult.data;
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signUp({
