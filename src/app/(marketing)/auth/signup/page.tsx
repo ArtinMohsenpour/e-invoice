@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Loader2, CheckCircle2, ShieldCheck } from "lucide-react";
+import { Loader2, CheckCircle2, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import { signupAction } from "@/app/actions/auth";
 import { signupSchema, type SignupInput } from "@/lib/validations/auth";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [companyName, setCompanyName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -186,11 +187,11 @@ export default function SignUpPage() {
                 >
                   Password
                 </label>
-                <div className="mt-2">
+                <div className="relative mt-2">
                   <input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     autoComplete="new-password"
                     required
                     maxLength={100}
@@ -208,9 +209,20 @@ export default function SignUpPage() {
                       fieldErrors.password
                         ? "border-red-500 focus:ring-red-500"
                         : "border-border focus:ring-brand"
-                    } bg-input-bg px-3 py-2 text-foreground shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm sm:leading-6 transition-colors`}
+                    } bg-input-bg px-3 py-2 pr-10 text-foreground shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm sm:leading-6 transition-colors`}
                     placeholder="••••••••"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-500 focus:outline-none"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" aria-hidden="true" />
+                    ) : (
+                      <Eye className="h-4 w-4" aria-hidden="true" />
+                    )}
+                  </button>
                   {fieldErrors.password && (
                     <p className="mt-1 text-sm text-red-500">
                       {fieldErrors.password}

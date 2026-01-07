@@ -35,5 +35,14 @@ export const signupSchema = z.object({
     .regex(/[^a-zA-Z0-9]/, { message: "Password must contain at least one special character" }),
 });
 
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: "Email is required" })
+    .max(100, { message: "Email cannot exceed 100 characters" })
+    .email({ message: "Invalid email address" }),
+});
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type SignupInput = z.infer<typeof signupSchema>;
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
