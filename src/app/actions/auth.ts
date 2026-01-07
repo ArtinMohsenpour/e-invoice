@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { loginSchema, signupSchema, forgotPasswordSchema } from "@/lib/validations/auth";
+import { loginSchema, signupSchema, forgotPasswordSchema, resetPasswordSchema } from "@/lib/validations/auth";
 
 export async function signOutAction() {
   const supabase = await createClient();
@@ -23,15 +23,42 @@ export async function forgotPasswordAction(formData: FormData) {
   const { error } = await supabase.auth.resetPasswordForEmail(
     validationResult.data.email,
     {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/api/auth/callback?next=/dashboard/settings`,
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/api/auth/callback?next=/auth/reset-password`,
     }
   );
+
+  if (error) {
+    console.error("Reset password error:", error);
+    return { error: error.message || "An unknown error occurred" };
+  }
+
+  return { success: "Check your email for the password reset link." };
+}
+
+export async function resetPasswordAction(formData: FormData) {
+  const rawData = {
+    password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
+  };
+
+  const validationResult = resetPasswordSchema.safeParse(rawData);
+
+  if (!validationResult.success) {
+    return { error: validationResult.error.issues[0].message };
+  }
+
+  const { password } = validationResult.data;
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.updateUser({
+    password: password,
+  });
 
   if (error) {
     return { error: error.message };
   }
 
-  return { success: "Check your email for the password reset link." };
+  redirect("/dashboard");
 }
 
 export async function loginAction(formData: FormData) {

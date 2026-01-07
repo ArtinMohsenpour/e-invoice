@@ -52,7 +52,7 @@ export async function middleware(request: NextRequest) {
 
   // 2. Auth Routes: /auth/login, /auth/signup
   // If user is logged in, redirect them to dashboard
-  if (request.nextUrl.pathname.startsWith("/auth")) {
+  if (request.nextUrl.pathname.startsWith("/auth") && !request.nextUrl.pathname.startsWith("/auth/reset-password")) {
     if (user) {
       url.pathname = "/dashboard";
       return NextResponse.redirect(url);
