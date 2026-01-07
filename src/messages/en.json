@@ -1,0 +1,72 @@
+{
+  "HomePage": {
+    "title": "Welcome to E-Invoice",
+    "login": "Login",
+    "signup": "Sign Up",
+    "dashboard": "Dashboard"
+  },
+  "Navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout"
+  },
+  "Auth": {
+    "Login": {
+      "title": "Login to your account",
+      "description": "Welcome back! Please enter your details.",
+      "emailLabel": "Email address",
+      "passwordLabel": "Password",
+      "forgotPassword": "Forgot password?",
+      "submitButton": "Sign in",
+      "loadingButton": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up",
+      "errorTitle": "Unable to sign in",
+      "errorMessage": "Please check your email and password and try again."
+    },
+    "Signup": {
+      "title": "Create your account",
+      "description": "Start your 14-day free trial. No credit card required.",
+      "companyLabel": "Company or Legal Name",
+      "companyPlaceholder": "Telekom GmbH",
+      "companyHint": "Freelancers should enter their full legal name.",
+      "emailLabel": "Email address",
+      "passwordLabel": "Password",
+      "termsLabel": "I agree to the",
+      "termsLink": "Terms of Service",
+      "and": "and",
+      "privacyLink": "Privacy Policy",
+      "submitButton": "Create Account",
+      "loadingButton": "Creating account...",
+      "hasAccount": "Already a member?",
+      "signInLink": "Sign in",
+      "errorTitle": "Unable to create account",
+      "errorMessage": "Please check your details and try again."
+    },
+    "ForgotPassword": {
+      "title": "Reset your password",
+      "description": "Enter your email address and we'll send you a link to reset your password.",
+      "backToLogin": "Back to login",
+      "emailLabel": "Email address",
+      "submitButton": "Send reset link",
+      "loadingButton": "Sending...",
+      "successTitle": "Email sent",
+      "errorTitle": "Error"
+    },
+    "ResetPassword": {
+      "title": "Set new password",
+      "description": "Please enter your new password below.",
+      "passwordLabel": "New Password",
+      "confirmPasswordLabel": "Confirm New Password",
+      "submitButton": "Reset Password",
+      "loadingButton": "Resetting...",
+      "errorTitle": "Error"
+    },
+    "Placeholders": {
+      "email": "name@company.com",
+      "password": "••••••••"
+    }
+  }
+}

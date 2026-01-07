@@ -1,13 +1,22 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import createMiddleware from 'next-intl/middleware';
+import { routing } from './i18n/routing';
+
+const intlMiddleware = createMiddleware(routing);
 
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  });
+  // 1. Run next-intl middleware first
+  const response = intlMiddleware(request);
 
+  // If next-intl redirects (e.g. / -> /en), return immediately
+  // and let the browser make the new request.
+  if (response.headers.get('location')) {
+    return response;
+  }
+
+  // 2. Setup Supabase client
+  // Pass the 'response' object so Supabase can set cookies on it
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -17,12 +26,9 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            request.cookies.set(name, value)
+          cookiesToSet.forEach(({ name, value }) => 
+             request.cookies.set(name, value)
           );
-          response = NextResponse.next({
-            request,
-          });
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options)
           );
@@ -31,32 +37,38 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // IMPORTANT: Avoid writing any logic between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
-
+  // 3. Check Auth
   const { 
     data: { user }, 
   } = await supabase.auth.getUser();
 
-  const url = request.nextUrl.clone();
+  // 4. Protect Routes
+  const { pathname } = request.nextUrl;
   
-  // 1. Protected Routes: /dashboard, /invoices, etc.
-  // Add any other paths that require login here
-  if (request.nextUrl.pathname.startsWith("/dashboard")) {
-    if (!user) {
-      url.pathname = "/auth/login";
-      return NextResponse.redirect(url);
-    }
+  // Extract locale from pathname (e.g. /en/dashboard -> en)
+  // We assume the first segment is the locale because intlMiddleware 
+  // would have redirected if it wasn't (and we handled that above).
+  // However, for API routes or public files ignored by matcher, we might be careful.
+  // But our matcher excludes those.
+  const locale = pathname.split('/')[1]; 
+  const isValidLocale = routing.locales.includes(locale as any);
+  const currentLocale = isValidLocale ? locale : routing.defaultLocale;
+
+  // Paths to check
+  // Note: pathname includes the locale, e.g. /en/dashboard
+  const isDashboard = pathname.includes('/dashboard');
+  const isAuthPage = pathname.includes('/auth/');
+
+  if (isDashboard && !user) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/${currentLocale}/auth/login`;
+    return NextResponse.redirect(url);
   }
 
-  // 2. Auth Routes: /auth/login, /auth/signup
-  // If user is logged in, redirect them to dashboard
-  if (request.nextUrl.pathname.startsWith("/auth") && !request.nextUrl.pathname.startsWith("/auth/reset-password")) {
-    if (user) {
-      url.pathname = "/dashboard";
-      return NextResponse.redirect(url);
-    }
+  if (isAuthPage && !pathname.includes('reset-password') && user) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/${currentLocale}/dashboard`;
+    return NextResponse.redirect(url);
   }
 
   return response;
@@ -64,13 +76,9 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public files (files in /public)
-     */
-    "/((?!_next/static|_next/image|favicon.ico|.*\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    // Match all pathnames except for
+    // - … if they start with `/api`, `/_next` or `/_vercel`
+    // - … the ones containing a dot (e.g. `favicon.ico`)
+    '/((?!api|_next|_vercel|.*\..*).*)',
   ],
 };

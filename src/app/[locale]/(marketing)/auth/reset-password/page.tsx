@@ -14,6 +14,7 @@ import {
   resetPasswordSchema,
   type ResetPasswordInput,
 } from "@/lib/validations/auth";
+import { useTranslations } from "next-intl";
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
@@ -25,6 +26,9 @@ export default function ResetPasswordPage() {
   const [fieldErrors, setFieldErrors] = useState<
     Partial<Record<keyof ResetPasswordInput, string>>
   >({});
+
+  const t = useTranslations("Auth.ResetPassword");
+  const tp = useTranslations("Auth.Placeholders");
 
   async function handleResetPassword(e: React.FormEvent) {
     e.preventDefault();
@@ -62,14 +66,14 @@ export default function ResetPasswordPage() {
     <div className="flex min-h-screen w-full bg-background">
       <div className="flex min-h-screen w-full mx-auto">
         {/* Left Panel: Form */}
-        <div className="flex w-full items-end flex-col justify-start px-4 py-12 sm:px-6 lg:pr-17.5 lg:pt-22 lg:flex-none lg:w-1/2">
+        <div className="flex w-full items-end flex-col justify-start px-4 py-12 sm:px-6 lg:pr-28 lg:pt-22 lg:flex-none lg:w-1/2">
           <div className="w-full max-w-sm lg:w-96">
             <div className="mb-10">
               <h2 className="text-3xl font-bold tracking-tight text-foreground">
-                Set new password
+                {t("title")}
               </h2>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                Please enter your new password below.
+                {t("description")}
               </p>
             </div>
 
@@ -78,7 +82,7 @@ export default function ResetPasswordPage() {
                 <div className="flex items-start gap-3">
                   <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
                   <div>
-                    <h3 className="font-semibold">Error</h3>
+                    <h3 className="font-semibold">{t("errorTitle")}</h3>
                     <p className="mt-1 text-red-700 dark:text-red-400">
                       {error}
                     </p>
@@ -97,7 +101,7 @@ export default function ResetPasswordPage() {
                   htmlFor="password"
                   className="block text-sm font-medium leading-6 text-foreground"
                 >
-                  New Password
+                  {t("passwordLabel")}
                 </label>
                 <div className="relative mt-2">
                   <input
@@ -122,7 +126,7 @@ export default function ResetPasswordPage() {
                         ? "border-red-500 focus:ring-red-500"
                         : "border-border focus:ring-brand"
                     } bg-input-bg px-3 py-2 pr-10 text-foreground shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm sm:leading-6 transition-colors`}
-                    placeholder="••••••••"
+                    placeholder={tp("password")}
                   />
                   <button
                     type="button"
@@ -148,7 +152,7 @@ export default function ResetPasswordPage() {
                   htmlFor="confirmPassword"
                   className="block text-sm font-medium leading-6 text-foreground"
                 >
-                  Confirm New Password
+                  {t("confirmPasswordLabel")}
                 </label>
                 <div className="relative mt-2">
                   <input
@@ -173,7 +177,7 @@ export default function ResetPasswordPage() {
                         ? "border-red-500 focus:ring-red-500"
                         : "border-border focus:ring-brand"
                     } bg-input-bg px-3 py-2 pr-10 text-foreground shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm sm:leading-6 transition-colors`}
-                    placeholder="••••••••"
+                    placeholder={tp("password")}
                   />
                   <button
                     type="button"
@@ -203,7 +207,7 @@ export default function ResetPasswordPage() {
                   {loading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
                   ) : (
-                    "Reset Password"
+                    t("submitButton")
                   )}
                 </button>
               </div>

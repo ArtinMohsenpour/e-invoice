@@ -1,32 +1,48 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { Loader2, CheckCircle2, ShieldCheck, AlertCircle } from "lucide-react";
-import { loginAction } from "@/app/actions/auth";
-import { loginSchema, type LoginInput } from "@/lib/validations/auth";
+import { Link } from "@/i18n/routing";
+import {
+  Loader2,
+  CheckCircle2,
+  ShieldCheck,
+  AlertCircle,
+  ArrowLeft,
+} from "lucide-react";
+import { forgotPasswordAction } from "@/app/actions/auth";
+import {
+  forgotPasswordSchema,
+  type ForgotPasswordInput,
+} from "@/lib/validations/auth";
+import { useTranslations } from "next-intl";
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<
-    Partial<Record<keyof LoginInput, string>>
+    Partial<Record<keyof ForgotPasswordInput, string>>
   >({});
 
-  async function handleLogin(e: React.FormEvent) {
+  const t = useTranslations("Auth.ForgotPassword");
+  const tp = useTranslations("Auth.Placeholders");
+
+  async function handleForgotPassword(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setSuccess(null);
     setFieldErrors({});
 
-    const result = loginSchema.safeParse({ email, password });
+    const result = forgotPasswordSchema.safeParse({ email });
 
     if (!result.success) {
-      const formattedErrors: Partial<Record<keyof LoginInput, string>> = {};
+      const formattedErrors: Partial<
+        Record<keyof ForgotPasswordInput, string>
+      > = {};
       result.error.issues.forEach((issue) => {
-        const path = issue.path[0] as keyof LoginInput;
+        const path = issue.path[0] as keyof ForgotPasswordInput;
         formattedErrors[path] = issue.message;
       });
       setFieldErrors(formattedErrors);
@@ -36,30 +52,41 @@ export default function LoginPage() {
 
     const formData = new FormData();
     formData.append("email", email);
-    formData.append("password", password);
 
-    const actionResult = await loginAction(formData);
+    const actionResult = await forgotPasswordAction(formData);
 
-    // If result is returned, it means there was an error
-    // (Redirects throw errors that are caught by Next.js, so they don't return here)
     if (actionResult?.error) {
-      setError(actionResult.error);
-      setLoading(false);
+      setError(
+        typeof actionResult.error === "string"
+          ? actionResult.error
+          : "An error occurred. Please try again."
+      );
+    } else if (actionResult?.success) {
+      setSuccess(actionResult.success);
+      setEmail(""); // Clear the field on success
     }
+    setLoading(false);
   }
 
   return (
     <div className="flex min-h-screen w-full bg-background">
-      <div className="flex min-h-screen w-full  mx-auto">
+      <div className="flex min-h-screen w-full mx-auto">
         {/* Left Panel: Form */}
-        <div className="flex w-full items-end flex-col justify-start px-4 py-12 sm:px-6 lg:pr-17.5 lg:pt-22 lg:flex-none lg:w-1/2">
+        <div className="flex w-full items-end flex-col justify-start px-4 py-12 sm:px-6 lg:pr-28 lg:pt-20 lg:flex-none lg:w-1/2">
           <div className="w-full max-w-sm lg:w-96">
             <div className="mb-10">
+              <Link
+                href="/auth/login"
+                className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 mb-6 transition-colors"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                {t("backToLogin")}
+              </Link>
               <h2 className="text-3xl font-bold tracking-tight text-foreground">
-                Login to your account
+                {t("title")}
               </h2>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                Welcome back! Please enter your details.
+                {t("description")}
               </p>
             </div>
 
@@ -68,22 +95,40 @@ export default function LoginPage() {
                 <div className="flex items-start gap-3">
                   <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
                   <div>
-                    <h3 className="font-semibold">Unable to sign in</h3>
+                    <h3 className="font-semibold">{t("errorTitle")}</h3>
                     <p className="mt-1 text-red-700 dark:text-red-400">
-                      Please check your email and password and try again.
+                      {error}
                     </p>
                   </div>
                 </div>
               </div>
             )}
 
-            <form onSubmit={handleLogin} className="space-y-6" noValidate>
+            {success && (
+              <div className="mb-6 rounded-lg bg-green-50 p-4 text-sm text-green-800 border border-green-100 dark:bg-green-900/10 dark:text-green-300 dark:border-green-900/30 animate-in fade-in slide-in-from-top-1">
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />
+                  <div>
+                    <h3 className="font-semibold">{t("successTitle")}</h3>
+                    <p className="mt-1 text-green-700 dark:text-green-400">
+                      {success}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <form
+              onSubmit={handleForgotPassword}
+              className="space-y-6"
+              noValidate
+            >
               <div>
                 <label
                   htmlFor="email"
                   className="block text-sm font-medium leading-6 text-foreground"
                 >
-                  Email address
+                  {t("emailLabel")}
                 </label>
                 <div className="mt-2">
                   <input
@@ -108,61 +153,11 @@ export default function LoginPage() {
                         ? "border-red-500 focus:ring-red-500"
                         : "border-border focus:ring-brand"
                     } bg-input-bg px-3 py-2 text-foreground shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm sm:leading-6 transition-colors`}
-                    placeholder="name@company.com"
+                    placeholder={tp("email")}
                   />
                   {fieldErrors.email && (
                     <p className="mt-1 text-sm text-red-500">
                       {fieldErrors.email}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium leading-6 text-foreground"
-                  >
-                    Password
-                  </label>
-                  <div className="text-sm">
-                    <Link
-                      href="/auth/forgot-password"
-                      className="font-semibold text-brand hover:underline"
-                    >
-                      Forgot password?
-                    </Link>
-                  </div>
-                </div>
-                <div className="mt-2">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    required
-                    maxLength={100}
-                    value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      if (fieldErrors.password) {
-                        setFieldErrors((prev) => ({
-                          ...prev,
-                          password: undefined,
-                        }));
-                      }
-                    }}
-                    className={`block w-full rounded-md border ${
-                      fieldErrors.password
-                        ? "border-red-500 focus:ring-red-500"
-                        : "border-border focus:ring-brand"
-                    } bg-input-bg px-3 py-2 text-foreground shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm sm:leading-6 transition-colors`}
-                    placeholder="••••••••"
-                  />
-                  {fieldErrors.password && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {fieldErrors.password}
                     </p>
                   )}
                 </div>
@@ -177,21 +172,11 @@ export default function LoginPage() {
                   {loading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
                   ) : (
-                    "Sign in"
+                    t("submitButton")
                   )}
                 </button>
               </div>
             </form>
-
-            <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/auth/signup"
-                className="font-semibold text-brand hover:underline"
-              >
-                Sign up
-              </Link>
-            </p>
           </div>
         </div>
 
@@ -229,24 +214,6 @@ export default function LoginPage() {
                   Real-time Invoice Tracking
                 </li>
               </ul>
-
-              <div className="mt-12 max-w-fit p-6 bg-background/60 backdrop-blur-sm rounded-2xl border border-border shadow-sm">
-                <div className="flex items-center gap-4 mb-3">
-                  <div className="h-10 w-10 rounded-full bg-brand/10 flex items-center justify-center text-brand font-bold ring-1 ring-brand/20">
-                    JS
-                  </div>
-                  <div>
-                    <p className="font-semibold text-foreground">Jan Schmidt</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      CEO at TechBerlin GmbH
-                    </p>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-600 dark:text-gray-300 italic">
-                  &quot;Finally an invoicing tool that actually understands
-                  German tax laws. Setup took 2 minutes.&quot;
-                </p>
-              </div>
             </div>
           </div>
         </div>
