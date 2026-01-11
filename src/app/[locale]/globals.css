@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+:root {
+  /* --- BASE --- */
+  --background: #f8f9ff; /* Updated: Soft light blue-white */
+  --foreground: #0f172a; /* Slate 900 */
+
+  /* --- BRAND / PRIMARY --- */
+  --primary: #2563eb; /* Blue 600 */
+  --primary-foreground: #ffffff;
+  --primary-hover: #1d4ed8;
+
+  /* --- SECONDARY / MUTED --- */
+  --secondary: #dde2ef; /* Updated: Soft slate blue */
+  --secondary-foreground: #1e293b; /* Slate 800 */
+  
+  --muted: #f8fafc; /* Slate 50 */
+  --muted-foreground: #64748b; /* Slate 500 */
+
+  /* --- UI ELEMENTS --- */
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+
+  --border: #e2e8f0; /* Slate 200 */
+  --input: #e2e8f0;
+  --ring: #3b82f6; /* Focus ring color */
+
+  /* --- STATE COLORS (Semantic) --- */
+  --success: #10b981; /* Emerald 500 */
+  --success-foreground: #ffffff;
+  
+  --warning: #f59e0b; /* Amber 500 */
+  --warning-foreground: #ffffff;
+
+  --error: #ef4444; /* Red 500 */
+  --error-foreground: #ffffff;
+
+  --info: #0ea5e9; /* Sky 500 */
+  --info-foreground: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* --- BASE --- */
+    --background: #0b1120; /* Deep Navy */
+    --foreground: #f1f5f9; /* Slate 100 */
+
+    /* --- BRAND / PRIMARY --- */
+    --primary: #3b82f6; /* Blue 500 */
+    --primary-foreground: #ffffff;
+    --primary-hover: #60a5fa;
+
+    /* --- SECONDARY / MUTED --- */
+    --secondary: #1e293b; /* Slate 800 */
+    --secondary-foreground: #f1f5f9;
+    
+    --muted: #0f172a; /* Slate 900 */
+    --muted-foreground: #94a3b8; /* Slate 400 */
+
+    /* --- UI ELEMENTS --- */
+    --card: #0f172a;
+    --card-foreground: #f1f5f9;
+    
+    --popover: #0f172a;
+    --popover-foreground: #f1f5f9;
+
+    --border: #1e293b; /* Slate 800 */
+    --input: #1e293b;
+    --ring: #1d4ed8;
+
+    /* --- STATE COLORS --- */
+    --success: #059669;
+    --warning: #d97706;
+    --error: #dc2626;
+    --info: #0284c7;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}

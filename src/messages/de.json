@@ -1,0 +1,72 @@
+{
+  "HomePage": {
+    "title": "Willkommen bei E-Invoice",
+    "login": "Anmelden",
+    "signup": "Registrieren",
+    "dashboard": "Instrumententafel"
+  },
+  "Navigation": {
+    "home": "Startseite",
+    "dashboard": "Dashboard",
+    "login": "Anmelden",
+    "signup": "Registrieren",
+    "logout": "Abmelden"
+  },
+  "Auth": {
+    "Login": {
+      "title": "In Ihrem Konto anmelden",
+      "description": "Willkommen zurück! Bitte geben Sie Ihre Daten ein.",
+      "emailLabel": "E-Mail-Adresse",
+      "passwordLabel": "Passwort",
+      "forgotPassword": "Passwort vergessen?",
+      "submitButton": "Anmelden",
+      "loadingButton": "Anmelden...",
+      "noAccount": "Haben Sie noch kein Konto?",
+      "signUpLink": "Registrieren",
+      "errorTitle": "Anmeldung nicht möglich",
+      "errorMessage": "Bitte überprüfen Sie E-Mail und Passwort und versuchen Sie es erneut."
+    },
+    "Signup": {
+      "title": "Konto erstellen",
+      "description": "Starten Sie Ihre 14-tägige kostenlose Testversion. Keine Kreditkarte erforderlich.",
+      "companyLabel": "Firma oder rechtlicher Name",
+      "companyPlaceholder": "Telekom GmbH",
+      "companyHint": "Freiberufler sollten ihren vollständigen rechtlichen Namen eingeben.",
+      "emailLabel": "E-Mail-Adresse",
+      "passwordLabel": "Passwort",
+      "termsLabel": "Ich stimme den",
+      "termsLink": "Nutzungsbedingungen",
+      "and": "und der",
+      "privacyLink": "Datenschutzerklärung",
+      "submitButton": "Konto erstellen",
+      "loadingButton": "Erstelle Konto...",
+      "hasAccount": "Bereits Mitglied?",
+      "signInLink": "Anmelden",
+      "errorTitle": "Konto konnte nicht erstellt werden",
+      "errorMessage": "Bitte überprüfen Sie Ihre Angaben und versuchen Sie es erneut."
+    },
+    "ForgotPassword": {
+      "title": "Passwort zurücksetzen",
+      "description": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
+      "backToLogin": "Zurück zur Anmeldung",
+      "emailLabel": "E-Mail-Adresse",
+      "submitButton": "Link senden",
+      "loadingButton": "Sende...",
+      "successTitle": "E-Mail gesendet",
+      "errorTitle": "Fehler"
+    },
+    "ResetPassword": {
+      "title": "Neues Passwort festlegen",
+      "description": "Bitte geben Sie unten Ihr neues Passwort ein.",
+      "passwordLabel": "Neues Passwort",
+      "confirmPasswordLabel": "Neues Passwort bestätigen",
+      "submitButton": "Passwort zurücksetzen",
+      "loadingButton": "Zurücksetzen...",
+      "errorTitle": "Fehler"
+    },
+    "Placeholders": {
+      "email": "name@firma.de",
+      "password": "••••••••"
+    }
+  }
+}
