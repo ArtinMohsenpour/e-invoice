@@ -1,7 +1,7 @@
-export default function Home() {
+import Dashboard from "@/components/dashboard/Dashboard";
+
+export default function DashboardPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <p>Dashboard</p>
-    </div>
+    <Dashboard />
   );
 }

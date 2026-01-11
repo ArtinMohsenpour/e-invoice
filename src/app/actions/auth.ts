@@ -4,11 +4,13 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { loginSchema, signupSchema, forgotPasswordSchema, resetPasswordSchema } from "@/lib/validations/auth";
+import { getLocale } from "next-intl/server";
 
 export async function signOutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/");
+  const locale = await getLocale();
+  redirect(`/${locale}`);
 }
 
 export async function forgotPasswordAction(formData: FormData) {
@@ -58,7 +60,8 @@ export async function resetPasswordAction(formData: FormData) {
     return { error: error.message };
   }
 
-  redirect("/dashboard");
+  const locale = await getLocale();
+  redirect(`/${locale}/dashboard`);
 }
 
 export async function loginAction(formData: FormData) {
@@ -86,7 +89,8 @@ export async function loginAction(formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
+  const locale = await getLocale();
+  redirect(`/${locale}/dashboard`);
 }
 
 export async function signupAction(formData: FormData) {
@@ -120,5 +124,6 @@ export async function signupAction(formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
+  const locale = await getLocale();
+  redirect(`/${locale}/dashboard`);
 }

@@ -1,59 +1,115 @@
 @import "tailwindcss";
 
 :root {
-  /* 
-     MODE: LIGHT (Default)
-     Psychology: Clean, Official, "Paper-like" (German Admin style)
-  */
-  --background: #ffffff; /* Pure White */
+  /* --- BASE --- */
+  --background: #f8f9ff; /* Updated: Soft light blue-white */
   --foreground: #0f172a; /* Slate 900 */
+
+  /* --- BRAND / PRIMARY --- */
+  --primary: #2563eb; /* Blue 600 */
+  --primary-foreground: #ffffff;
+  --primary-hover: #1d4ed8;
+
+  /* --- SECONDARY / MUTED --- */
+  --secondary: #dde2ef; /* Updated: Soft slate blue */
+  --secondary-foreground: #1e293b; /* Slate 800 */
+  
+  --muted: #f8fafc; /* Slate 50 */
   --muted-foreground: #64748b; /* Slate 500 */
 
-  /* Brand: "Royal Azure" */
-  --brand: #2563eb; /* Blue 600 */
-  --brand-foreground: #ffffff;
+  /* --- UI ELEMENTS --- */
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
 
-  /* Accent: "Success Green" */
-  --accent: #0d9488; /* Emerald 500 */
+  --border: #e2e8f0; /* Slate 200 */
+  --input: #e2e8f0;
+  --ring: #3b82f6; /* Focus ring color */
 
-  /* UI Elements - Adjusted for better Light Mode contrast */
-  --surface: #e7eaee; /* Slate 100 - Distinct from white background */
-  --border: #cbd5e1; /* Slate 300 - Visible but soft border */
-  --input-bg: #ffffff; /* White inputs */
+  /* --- STATE COLORS (Semantic) --- */
+  --success: #10b981; /* Emerald 500 */
+  --success-foreground: #ffffff;
+  
+  --warning: #f59e0b; /* Amber 500 */
+  --warning-foreground: #ffffff;
+
   --error: #ef4444; /* Red 500 */
+  --error-foreground: #ffffff;
+
+  --info: #0ea5e9; /* Sky 500 */
+  --info-foreground: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* 
-       MODE: DARK
-       Psychology: Premium, "Night Mode" Dashboard
-    */
-    --background: #0b1120; /* Rich Deep Navy */
+    /* --- BASE --- */
+    --background: #0b1120; /* Deep Navy */
     --foreground: #f1f5f9; /* Slate 100 */
+
+    /* --- BRAND / PRIMARY --- */
+    --primary: #3b82f6; /* Blue 500 */
+    --primary-foreground: #ffffff;
+    --primary-hover: #60a5fa;
+
+    /* --- SECONDARY / MUTED --- */
+    --secondary: #1e293b; /* Slate 800 */
+    --secondary-foreground: #f1f5f9;
+    
+    --muted: #0f172a; /* Slate 900 */
     --muted-foreground: #94a3b8; /* Slate 400 */
 
-    --brand: #3b82f6; /* Blue 500 */
+    /* --- UI ELEMENTS --- */
+    --card: #0f172a;
+    --card-foreground: #f1f5f9;
+    
+    --popover: #0f172a;
+    --popover-foreground: #f1f5f9;
 
-    --accent: #14b8a6;
+    --border: #1e293b; /* Slate 800 */
+    --input: #1e293b;
+    --ring: #1d4ed8;
 
-    --surface: #1e293b; /* Slate 800 */
-    --border: #334155; /* Slate 700 */
-    --input-bg: #0f172a; /* Slate 900 */
+    /* --- STATE COLORS --- */
+    --success: #059669;
+    --warning: #d97706;
+    --error: #dc2626;
+    --info: #0284c7;
   }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-brand: var(--brand);
-  --color-brand-foreground: var(--brand-foreground);
-  --color-accent: var(--accent);
-  --color-surface: var(--surface);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
   --color-border: var(--border);
-  --color-input-bg: var(--input-bg);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
 }
 
 body {
