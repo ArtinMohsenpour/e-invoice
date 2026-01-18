@@ -1,6 +1,7 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { resendAdapter } from '@payloadcms/email-resend'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { buildConfig } from 'payload'
 import sharp from 'sharp'
@@ -19,6 +20,11 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
+  email: resendAdapter({
+    defaultFromAddress: 'mohsenpour.artin@gmail.com',
+    defaultFromName: 'Faktura',
+    apiKey: process.env.RESEND_API_KEY || '',
+  }),
   // Register your collections here
   collections: [Users, Media],
   editor: lexicalEditor(),
@@ -30,9 +36,6 @@ export default buildConfig({
     pool: {
       // Ensure your .env has DATABASE_URL set to your Supabase string
       connectionString: process.env.DATABASE_URL || '',
-      // Note: 'prepare: false' is not supported by node-postgres (used by Payload).
-      // If you are using Supabase, please use the Session Pooler connection string (usually port 5432)
-      // or the standard connection string to avoid prepared statement issues.
     },
   }),
   sharp,

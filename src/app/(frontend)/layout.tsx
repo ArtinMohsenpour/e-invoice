@@ -1,4 +1,5 @@
 import type React from 'react'
+import { AuthProvider } from '@/providers/Auth'
 import './styles.css'
 
 export const metadata = {
@@ -12,7 +13,9 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <main>{children}</main>
+        <main>
+          <AuthProvider>{children}</AuthProvider>
+        </main>
       </body>
     </html>
   )

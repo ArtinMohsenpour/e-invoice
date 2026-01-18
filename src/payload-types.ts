@@ -122,6 +122,25 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  role: 'admin' | 'user';
+  /**
+   * Disable user access without deleting
+   */
+  active?: boolean | null;
+  plan: 'basic' | 'pro' | 'enterprise';
+  subscriptionStatus?: ('trialing' | 'active' | 'past_due' | 'canceled') | null;
+  /**
+   * Total paid amount
+   */
+  paid?: number | null;
+  /**
+   * Next billing date
+   */
+  due?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  companyName?: string | null;
+  phoneNumber?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -129,6 +148,8 @@ export interface User {
   resetPasswordExpiration?: string | null;
   salt?: string | null;
   hash?: string | null;
+  _verified?: boolean | null;
+  _verificationToken?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
   sessions?:
@@ -238,6 +259,16 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
+  active?: T;
+  plan?: T;
+  subscriptionStatus?: T;
+  paid?: T;
+  due?: T;
+  firstName?: T;
+  lastName?: T;
+  companyName?: T;
+  phoneNumber?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -245,6 +276,8 @@ export interface UsersSelect<T extends boolean = true> {
   resetPasswordExpiration?: T;
   salt?: T;
   hash?: T;
+  _verified?: T;
+  _verificationToken?: T;
   loginAttempts?: T;
   lockUntil?: T;
   sessions?:
