@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url'
 import { headers as getHeaders } from 'next/headers.js'
 import Image from 'next/image'
 import { getPayload } from 'payload'
+import { getTranslations } from 'next-intl/server'
 
 import config from '@/payload.config'
 import './styles.css'
@@ -11,6 +12,8 @@ export default async function HomePage() {
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
   const { user } = await payload.auth({ headers })
+  
+  const t = await getTranslations('HomePage')
 
   const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
 
@@ -26,8 +29,8 @@ export default async function HomePage() {
             width={65}
           />
         </picture>
-        {!user && <h1>Welcome to your new project.</h1>}
-        {user && <h1>Welcome back, {user.email}</h1>}
+        {!user && <h1>{t('welcome')}</h1>}
+        {user && <h1>{t('welcomeBack', { email: user.email as string })}</h1>}
         <div className="links">
           <a
             className="admin"
@@ -35,7 +38,7 @@ export default async function HomePage() {
             rel="noopener noreferrer"
             target="_blank"
           >
-            Go to admin panel
+            {t('adminPanel')}
           </a>
           <a
             className="docs"
@@ -43,14 +46,14 @@ export default async function HomePage() {
             rel="noopener noreferrer"
             target="_blank"
           >
-            Documentation
+            {t('docs')}
           </a>
         </div>
       </div>
       <div className="footer">
-        <p>Update this page by editing</p>
+        <p>{t('footerParams')}</p>
         <a className="codeLink" href={fileURL}>
-          <code>app/(frontend)/page.tsx</code>
+          <code>{t('footerPath')}</code>
         </a>
       </div>
     </div>

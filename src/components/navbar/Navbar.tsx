@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/providers/Auth";
 import {
@@ -14,14 +14,20 @@ import {
   LayoutDashboard,
   FileText,
   User,
+  Languages,
 } from "lucide-react";
+import { logoutAction } from "@/app/[locale]/(frontend)/actions/auth";
 
 export const Navbar = () => {
   const { user } = useAuth();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
   const pathname = usePathname();
+  const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations('Navbar');
 
   useEffect(() => {
     setMounted(true);
@@ -29,6 +35,11 @@ export const Navbar = () => {
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
+  };
+
+  const toggleLanguage = () => {
+    const nextLocale = locale === 'en' ? 'de' : 'en';
+    router.replace(pathname, { locale: nextLocale });
   };
 
   const isActive = (path: string) => pathname === path;
@@ -56,7 +67,7 @@ export const Navbar = () => {
                   : "text-muted-foreground"
               }`}
             >
-              Dashboard
+              {t('dashboard')}
             </Link>
             {user && (
               <Link
@@ -67,19 +78,29 @@ export const Navbar = () => {
                     : "text-muted-foreground"
                 }`}
               >
-                Invoices
+                {t('invoices')}
               </Link>
             )}
           </div>
 
           {/* Right Side Actions */}
           <div className="hidden md:flex items-center gap-4">
+            
+             {/* Language Toggle */}
+             <button
+                onClick={toggleLanguage}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-transparent text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                aria-label="Toggle language"
+              >
+                <span className="text-xs font-bold">{locale.toUpperCase()}</span>
+              </button>
+
             {/* Theme Toggle Button */}
             {mounted ? (
               <button
                 onClick={toggleTheme}
                 className="relative cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-transparent text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                aria-label="Toggle theme"
+                aria-label={t('theme')}
               >
                 <Sun className="h-4 w-4 transition-all scale-100 rotate-0 dark:scale-0 dark:-rotate-90 text-yellow-500" />
                 <Moon className="absolute h-4 w-4 transition-all scale-0 rotate-90 dark:scale-100 dark:rotate-0 text-blue-400" />
@@ -93,16 +114,21 @@ export const Navbar = () => {
               <div className="h-9 w-24 animate-pulse rounded-md bg-muted" />
             ) : user ? (
               <div className="flex items-center gap-3 pl-2 border-l border-border">
-                <span className="text-sm font-medium text-foreground hidden lg:inline-block">
-                  {user.email}
-                </span>
                 <Link
                   href="/account"
                   className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
-                  title="Account"
+                  title={t('account')}
                 >
                   <User className="h-4 w-4" />
                 </Link>
+
+                <button
+                  onClick={() => logoutAction()}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                  title={t('logout')}
+                >
+                  <LogOut className="h-4 w-4" />
+                </button>
               </div>
             ) : (
               <div className="flex items-center gap-1">
@@ -110,13 +136,13 @@ export const Navbar = () => {
                   href="/login"
                   className="inline-flex h-9 items-center justify-center rounded-md px-3 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 >
-                  Login
+                  {t('login')}
                 </Link>
                 <Link
                   href="/signup"
                   className="inline-flex h-9 items-center justify-center rounded-md px-3 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 >
-                  Sign Up
+                  {t('signup')}
                 </Link>
               </div>
             )}
@@ -124,6 +150,14 @@ export const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="flex md:hidden items-center gap-2">
+            
+            <button
+                onClick={toggleLanguage}
+                 className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-transparent text-foreground"
+              >
+                 <span className="text-xs font-bold">{locale.toUpperCase()}</span>
+              </button>
+
             {mounted && (
               <button
                 onClick={toggleTheme}
@@ -157,7 +191,7 @@ export const Navbar = () => {
               className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground"
             >
               <LayoutDashboard className="h-4 w-4" />
-              Dashboard
+              {t('dashboard')}
             </Link>
             {user && (
               <Link
@@ -166,7 +200,7 @@ export const Navbar = () => {
                 className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground"
               >
                 <FileText className="h-4 w-4" />
-                Invoices
+                {t('invoices')}
               </Link>
             )}
           </div>
@@ -178,7 +212,7 @@ export const Navbar = () => {
                     <User className="h-4 w-4" />
                   </div>
                   <div className="text-sm">
-                    <p className="font-medium text-foreground">Account</p>
+                    <p className="font-medium text-foreground">{t('account')}</p>
                     <p className="text-xs text-muted-foreground">
                       {user.email}
                     </p>
@@ -189,7 +223,7 @@ export const Navbar = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="text-sm font-medium text-primary hover:underline"
                 >
-                  Manage
+                  {t('manage')}
                 </Link>
               </div>
             ) : (
@@ -199,14 +233,14 @@ export const Navbar = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="flex h-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm font-medium text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground"
                 >
-                  Login
+                  {t('login')}
                 </Link>
                 <Link
                   href="/signup"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="flex h-9 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90"
                 >
-                  Sign Up
+                  {t('signup')}
                 </Link>
               </div>
             )}

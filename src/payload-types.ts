@@ -86,10 +86,10 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'de') | ('en' | 'de')[];
   globals: {};
   globalsSelect: {};
-  locale: null;
+  locale: 'en' | 'de';
   user: User & {
     collection: 'users';
   };
@@ -127,6 +127,8 @@ export interface User {
    * Disable user access without deleting
    */
   active?: boolean | null;
+  lastLogin?: string | null;
+  onboardingComplete?: boolean | null;
   plan: 'basic' | 'pro' | 'enterprise';
   subscriptionStatus?: ('trialing' | 'active' | 'past_due' | 'canceled') | null;
   /**
@@ -137,10 +139,13 @@ export interface User {
    * Next billing date
    */
   due?: string | null;
+  stripeCustomerId?: string | null;
   firstName?: string | null;
   lastName?: string | null;
   companyName?: string | null;
   phoneNumber?: string | null;
+  avatar?: (number | null) | Media;
+  language?: ('en' | 'de') | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -148,8 +153,6 @@ export interface User {
   resetPasswordExpiration?: string | null;
   salt?: string | null;
   hash?: string | null;
-  _verified?: boolean | null;
-  _verificationToken?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
   sessions?:
@@ -261,14 +264,19 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   role?: T;
   active?: T;
+  lastLogin?: T;
+  onboardingComplete?: T;
   plan?: T;
   subscriptionStatus?: T;
   paid?: T;
   due?: T;
+  stripeCustomerId?: T;
   firstName?: T;
   lastName?: T;
   companyName?: T;
   phoneNumber?: T;
+  avatar?: T;
+  language?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -276,8 +284,6 @@ export interface UsersSelect<T extends boolean = true> {
   resetPasswordExpiration?: T;
   salt?: T;
   hash?: T;
-  _verified?: T;
-  _verificationToken?: T;
   loginAttempts?: T;
   lockUntil?: T;
   sessions?:

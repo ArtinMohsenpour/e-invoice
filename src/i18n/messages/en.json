@@ -1,0 +1,48 @@
+{
+  "Navbar": {
+    "dashboard": "Dashboard",
+    "invoices": "Invoices",
+    "login": "Login",
+    "signup": "Sign Up",
+    "account": "Account",
+    "logout": "Logout",
+    "manage": "Manage",
+    "theme": "Toggle theme"
+  },
+  "Auth": {
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Enter your credentials to access your account",
+    "signupTitle": "Create an account",
+    "signupSubtitle": "Enter your details to create your account",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "companyNameLabel": "Company Name",
+    "submitLogin": "Sign In",
+    "submitLoginPending": "Signing in...",
+    "submitSignup": "Sign Up",
+    "submitSignupPending": "Creating account...",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "forgotPassword": "Forgot password?",
+    "verificationSent": "Verification email sent",
+    "checkEmail": "Please check your email to verify your account.",
+    "registrationSuccessful": "Registration Successful",
+    "registrationSuccessMessage": "Your data has been received. We have sent a verification email to your address. Please check your email and verify your account to log in.",
+    "goToLogin": "Go to Login"
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome to your dashboard"
+  },
+  "Common": {
+    "loading": "Loading..."
+  },
+  "HomePage": {
+    "welcome": "Welcome to your new project.",
+    "welcomeBack": "Welcome back, {email}",
+    "adminPanel": "Go to admin panel",
+    "docs": "Documentation",
+    "footerParams": "Update this page by editing",
+    "footerPath": "app/(frontend)/page.tsx"
+  }
+}

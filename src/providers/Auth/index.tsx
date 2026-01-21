@@ -80,9 +80,9 @@ export const AuthProvider = ({ children, initialUser }: AuthProviderProps) => {
   }, [router]);
 
   useEffect(() => {
-    // If we didn't get an initial user from the server,
-    // or if we want to ensure the token is still valid on mount.
-    if (initialUser === undefined) {
+    // If the server didn't find a user, try one last check on the client
+    // just in case (optional, but helps with debugging).
+    if (initialUser === null || initialUser === undefined) {
       fetchUser();
     }
   }, [fetchUser, initialUser]);

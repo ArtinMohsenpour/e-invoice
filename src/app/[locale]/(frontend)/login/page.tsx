@@ -7,11 +7,13 @@ import { useAuth } from "@/providers/Auth";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { AlertCircle, TriangleAlert } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function LoginPage() {
   const [state, action, isPending] = useActionState(loginAction, null);
   const { setUser } = useAuth();
   const router = useRouter();
+  const t = useTranslations('Auth');
 
   useEffect(() => {
     if (state?.success && state.user) {
@@ -31,9 +33,9 @@ export default function LoginPage() {
     <div className="flex min-h-screen w-full items-start justify-center bg-background p-4">
       <div className="w-full max-w-md rounded-xl border mt-12 border-border bg-card text-card-foreground shadow-sm p-8">
         <div className="mb-6 text-center">
-          <h3 className="text-2xl font-bold text-foreground">Login</h3>
+          <h3 className="text-2xl font-bold text-foreground">{t('loginTitle')}</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Enter your credentials to access your account
+            {t('loginSubtitle')}
           </p>
         </div>
         <form action={action} className="space-y-4" noValidate>
@@ -42,7 +44,7 @@ export default function LoginPage() {
               htmlFor="email"
               className="text-sm font-medium text-foreground"
             >
-              Email
+              {t('emailLabel')}
             </label>
             <input
               id="email"
@@ -51,7 +53,7 @@ export default function LoginPage() {
               placeholder="name@example.com"
               required
               autoComplete="email"
-              defaultValue={state?.fields?.email}
+              defaultValue={state?.fields?.email as string}
               className={cn(
                 "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
                 fieldErrors?.email &&
@@ -71,7 +73,7 @@ export default function LoginPage() {
               htmlFor="password"
               className="text-sm font-medium text-foreground"
             >
-              Password
+              {t('passwordLabel')}
             </label>
             <input
               id="password"
@@ -80,7 +82,7 @@ export default function LoginPage() {
               placeholder="********"
               required
               autoComplete="current-password"
-              defaultValue={state?.fields?.password}
+              defaultValue={state?.fields?.password as string}
               className={cn(
                 "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
                 fieldErrors?.password &&
@@ -111,7 +113,7 @@ export default function LoginPage() {
             disabled={isPending}
             className="inline-flex h-10 w-full mt-4 items-center justify-center rounded-md bg-primary text-primary-foreground text-sm font-medium transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
           >
-            {isPending ? "Signing in..." : "Sign in"}
+            {isPending ? t('submitLoginPending') : t('submitLogin')}
           </button>
         </form>
         <div className="mt-6 flex flex-col gap-2 text-center text-sm">
@@ -119,15 +121,15 @@ export default function LoginPage() {
             href="/forgot-password"
             className="text-muted-foreground hover:underline"
           >
-            Forgot password?
+            {t('forgotPassword')}
           </Link>
           <div className="text-muted-foreground">
-            Don't have an account?{" "}
+            {t('noAccount')}{" "}
             <Link
               href="/signup"
               className="font-medium text-primary hover:underline"
             >
-              Sign up
+              {t('submitSignup')}
             </Link>
           </div>
         </div>
