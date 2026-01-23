@@ -1,12 +1,12 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { loginAction } from "../actions/auth";
 import Link from "next/link";
 import { useAuth } from "@/providers/Auth";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { AlertCircle, TriangleAlert } from "lucide-react";
+import { AlertCircle, TriangleAlert, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export default function LoginPage() {
@@ -14,9 +14,11 @@ export default function LoginPage() {
   const { setUser } = useAuth();
   const router = useRouter();
   const t = useTranslations('Auth');
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
     if (state?.success && state.user) {
+      setIsRedirecting(true);
       setUser(state.user);
       router.refresh();
       router.push("/dashboard");
@@ -28,6 +30,24 @@ export default function LoginPage() {
 
   // Type guard for field errors
   const fieldErrors = typeof state?.error === "object" ? state.error : null;
+
+  if (isRedirecting) {
+    return (
+      <div className="flex min-h-screen w-full flex-col items-center justify-center bg-background p-4">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <div className="space-y-1">
+            <h3 className="text-xl font-semibold tracking-tight">
+              {t('loginSuccess')}
+            </h3>
+            <p className="text-muted-foreground">
+              {t('redirecting')}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen w-full items-start justify-center bg-background p-4">

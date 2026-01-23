@@ -30,9 +30,9 @@ export function middleware(request: NextRequest) {
 
   // 3. Auth Protection Logic
   if (token) {
-    // If logged in, prevent access to auth pages (login, signup)
+    // If logged in, prevent access to auth pages (login, signup, forgot-password, reset-password)
     // Redirect to dashboard
-    if (pathWithoutLocale === '/login' || pathWithoutLocale === '/signup') {
+    if (['/login', '/signup', '/forgot-password', '/reset-password'].includes(pathWithoutLocale)) {
        return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
     }
   } else {

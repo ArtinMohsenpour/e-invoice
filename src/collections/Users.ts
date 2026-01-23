@@ -4,6 +4,27 @@ export const Users: CollectionConfig = {
   slug: "users",
   auth: {
     verify: false,
+    forgotPassword: {
+      generateEmailHTML: (args?: any) => {
+        const { token, user } = args || {};
+        const serverURL =
+          process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
+        const resetLink = `${serverURL}/reset-password?token=${token}`;
+
+        return `
+          <!doctype html>
+          <html>
+            <body>
+              <h1>Reset your password</h1>
+              <p>Hello ${user?.email},</p>
+              <p>Click the link below to reset your password:</p>
+              <p><a href="${resetLink}">${resetLink}</a></p>
+              <p>If you didn't request this, you can safely ignore this email.</p>
+            </body>
+          </html>
+        `;
+      },
+    },
   },
   admin: {
     useAsTitle: "email",

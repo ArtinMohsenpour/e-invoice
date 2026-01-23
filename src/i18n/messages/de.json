@@ -28,7 +28,21 @@
     "checkEmail": "Bitte überprüfen Sie Ihre E-Mail, um Ihr Konto zu bestätigen.",
     "registrationSuccessful": "Registrierung erfolgreich",
     "registrationSuccessMessage": "Ihre Daten wurden empfangen. Wir haben eine Bestätigungs-E-Mail an Ihre Adresse gesendet. Bitte überprüfen Sie Ihre E-Mail und bestätigen Sie Ihr Konto, um sich anzumelden.",
-    "goToLogin": "Zum Login"
+    "goToLogin": "Zum Login",
+    "loginSuccess": "Anmeldung erfolgreich",
+    "redirecting": "Weiterleitung zum Dashboard...",
+    "forgotPasswordTitle": "Passwort zurücksetzen",
+    "forgotPasswordSubtitle": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
+    "submitForgotPassword": "Link senden",
+    "submitForgotPasswordPending": "Senden...",
+    "resetPasswordTitle": "Neues Passwort festlegen",
+    "resetPasswordSubtitle": "Geben Sie unten Ihr neues Passwort ein.",
+    "confirmPasswordLabel": "Passwort bestätigen",
+    "submitResetPassword": "Passwort zurücksetzen",
+    "submitResetPasswordPending": "Zurücksetzen...",
+    "passwordResetSuccess": "Passwort erfolgreich zurückgesetzt",
+    "backToLogin": "Zurück zum Login",
+    "goToDashboard": "Zum Dashboard"
   },
   "Dashboard": {
     "title": "Dashboard",
