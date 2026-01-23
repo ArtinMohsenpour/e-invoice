@@ -1,0 +1,159 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  /* Default (Light Mode) Palette */
+  --color-background: #ffffff;
+  --color-foreground: #020617;
+  --color-card: #f5f5f5;
+  --color-card-foreground: #020617;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #020617;
+  --color-primary: #1c4d8d; /* Brand Navy */
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #bde8f5; /* Light Blue */
+  --color-secondary-foreground: #0f2854;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-accent: #e2e8f0;
+  --color-accent-foreground: #0f2854;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #1c4d8d;
+
+  /* Custom Radius for shadcn */
+  --radius: 0.5rem;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+
+/* 3. DEFINE DARK MODE OVERRIDES OUTSIDE @theme */
+@layer base {
+  .dark {
+    --color-background: #0f172a;
+    --color-foreground: #f8fafc;
+    --color-card: #1c2638; /* Your Dark Navy */
+    --color-card-foreground: #f8fafc;
+    --color-popover: #0f172a;
+    --color-popover-foreground: #f8fafc;
+    --color-primary: #4988c4; /* Your Medium Blue */
+    --color-primary-foreground: #ffffff;
+    --color-secondary: #1c4d8d;
+    --color-secondary-foreground: #bde8f5;
+    --color-muted: #1e293b;
+    --color-muted-foreground: #94a3b8;
+    --color-accent: #1e293b;
+    --color-accent-foreground: #f8fafc;
+    --color-destructive: #be0000;
+    --color-destructive-foreground: #f8fafc;
+    --color-border: #1e293b;
+    --color-input: #1e293b;
+    --color-ring: #4988c4;
+  }
+}
+
+:root {
+  --font-mono: "Roboto Mono", monospace;
+  --font-sans: var(--font-jakarta);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 18px;
+  line-height: 32px;
+  background: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 18px;
+  line-height: 32px;
+  margin: 0;
+  color: var(--color-foreground);
+
+  @media (max-width: 1024px) {
+    font-size: 15px;
+    line-height: 24px;
+  }
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+h1 {
+  font-size: 64px;
+  line-height: 70px;
+  font-weight: bold;
+
+  @media (max-width: 1024px) {
+    margin: 24px 0;
+    font-size: 42px;
+    line-height: 42px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 38px;
+    line-height: 38px;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 32px;
+    line-height: 32px;
+  }
+}
+
+p {
+  @media (max-width: 1024px) {
+    margin: calc(var(--base) * 0.75) 0;
+  }
+}
+
+a {
+  color: currentColor;
+
+  &:focus {
+    opacity: 0.8;
+    outline: none;
+  }
+
+  &:active {
+    opacity: 0.7;
+    outline: none;
+  }
+}
+
+svg {
+  vertical-align: middle;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

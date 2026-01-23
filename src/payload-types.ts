@@ -86,10 +86,10 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'de') | ('en' | 'de')[];
   globals: {};
   globalsSelect: {};
-  locale: null;
+  locale: 'en' | 'de';
   user: User & {
     collection: 'users';
   };
@@ -122,6 +122,30 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  role: 'admin' | 'user';
+  /**
+   * Disable user access without deleting
+   */
+  active?: boolean | null;
+  lastLogin?: string | null;
+  onboardingComplete?: boolean | null;
+  plan: 'basic' | 'pro' | 'enterprise';
+  subscriptionStatus?: ('trialing' | 'active' | 'past_due' | 'canceled') | null;
+  /**
+   * Total paid amount
+   */
+  paid?: number | null;
+  /**
+   * Next billing date
+   */
+  due?: string | null;
+  stripeCustomerId?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  companyName?: string | null;
+  phoneNumber?: string | null;
+  avatar?: (number | null) | Media;
+  language?: ('en' | 'de') | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -238,6 +262,21 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
+  active?: T;
+  lastLogin?: T;
+  onboardingComplete?: T;
+  plan?: T;
+  subscriptionStatus?: T;
+  paid?: T;
+  due?: T;
+  stripeCustomerId?: T;
+  firstName?: T;
+  lastName?: T;
+  companyName?: T;
+  phoneNumber?: T;
+  avatar?: T;
+  language?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
