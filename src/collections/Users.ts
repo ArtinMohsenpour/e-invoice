@@ -3,6 +3,12 @@ import type { CollectionConfig } from "payload";
 export const Users: CollectionConfig = {
   slug: "users",
   auth: {
+    tokenExpiration: 3600, // 8 hours
+    cookies: {
+      domain: process.env.COOKIE_DOMAIN,
+      sameSite: "Lax",
+      secure: process.env.NODE_ENV === "production",
+    },
     verify: false,
     forgotPassword: {
       generateEmailHTML: (args?: any) => {

@@ -3,11 +3,16 @@
 import { cookies, headers } from "next/headers";
 import { getPayload } from "payload";
 import config from "@payload-config";
-import { LoginSchema, SignupSchema, ForgotPasswordSchema, ResetPasswordSchema } from "@/lib/validators";
+import {
+  LoginSchema,
+  SignupSchema,
+  ForgotPasswordSchema,
+  ResetPasswordSchema,
+} from "@/lib/validators";
 import { getLocale } from "next-intl/server";
 import { redirect } from "@/i18n/routing";
 
-const COOKIE_NAME = 'payload-token';
+const COOKIE_NAME = "payload-token";
 
 export async function getMeUser() {
   const headersList = await headers();
@@ -20,7 +25,7 @@ export async function getMeUser() {
 export async function loginAction(prevState: any, formData: FormData) {
   const payloadConfig = await config;
   const payload = await getPayload({ config: payloadConfig });
-  
+
   const data = Object.fromEntries(formData);
   const result = LoginSchema.safeParse(data);
 
@@ -40,9 +45,13 @@ export async function loginAction(prevState: any, formData: FormData) {
         password: result.data.password,
       },
     });
-    
+
     if (!user || !token) {
-        return { success: false, error: "Invalid email or password", fields: data };
+      return {
+        success: false,
+        error: "Invalid email or password",
+        fields: data,
+      };
     }
 
     const cookieStore = await cookies();
@@ -50,8 +59,9 @@ export async function loginAction(prevState: any, formData: FormData) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-      sameSite: 'lax'
+      maxAge: 3600, // 8 hours
+      sameSite: "lax",
+      domain: process.env.COOKIE_DOMAIN,
     });
 
     return { success: true, user };
@@ -87,7 +97,11 @@ export async function signupAction(prevState: any, formData: FormData) {
 
     return { success: true };
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to create account", fields: data };
+    return {
+      success: false,
+      error: error.message || "Failed to create account",
+      fields: data,
+    };
   }
 }
 
@@ -112,7 +126,7 @@ export async function forgotPasswordAction(prevState: any, formData: FormData) {
       data: {
         email: result.data.email,
       },
-      disableEmail: false, 
+      disableEmail: false,
     });
 
     return { success: true };
@@ -151,24 +165,29 @@ export async function resetPasswordAction(prevState: any, formData: FormData) {
       },
       overrideAccess: true,
     });
-    
+
     // Automatically log in the user after reset?
     // Usually we redirect to login, or we can set the cookie here.
     // Let's set the cookie for seamless experience.
-     if (user && newToken) {
-        const cookieStore = await cookies();
-        cookieStore.set(COOKIE_NAME, newToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            path: "/",
-            maxAge: 60 * 60 * 24 * 30, // 30 days
-            sameSite: 'lax'
-        });
-     }
+    if (user && newToken) {
+      const cookieStore = await cookies();
+      cookieStore.set(COOKIE_NAME, newToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: 3600, // 8 hours
+        sameSite: "lax",
+        domain: process.env.COOKIE_DOMAIN,
+      });
+    }
 
     return { success: true, user };
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to reset password", fields: data };
+    return {
+      success: false,
+      error: error.message || "Failed to reset password",
+      fields: data,
+    };
   }
 }
 
