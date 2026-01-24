@@ -2,11 +2,11 @@
 
 import React from "react";
 import { Link, usePathname } from "@/i18n/routing";
-import { HeaderData } from "@/lib/payload-utils";
+import { Header } from "@/payload-types";
 import { ChevronDown } from "lucide-react";
 
 interface DesktopNavProps {
-  navItems: HeaderData["navItems"];
+  navItems: Header["navItems"];
 }
 
 export const DesktopNav: React.FC<DesktopNavProps> = ({ navItems }) => {

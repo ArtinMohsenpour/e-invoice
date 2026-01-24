@@ -1,5 +1,5 @@
 import { getLocale } from "next-intl/server";
-import { getHeaderData } from "@/lib/payload-utils";
+import { getHeader } from "@/data/header";
 import { Logo } from "./Logo";
 import { DesktopNav } from "./DesktopNav";
 import { MobileMenu } from "./MobileMenu";
@@ -9,7 +9,7 @@ import { LanguageToggle } from "./LanguageToggle";
 
 export const Navbar = async () => {
   const locale = await getLocale();
-  const headerData = await getHeaderData(locale);
+  const headerData = await getHeader(locale);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">

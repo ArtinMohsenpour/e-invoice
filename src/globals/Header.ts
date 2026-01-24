@@ -1,8 +1,17 @@
 import { GlobalConfig } from "payload";
 import { NavRowLabel } from "@/components/payload/NavRowLabel";
+import { revalidateTag } from "next/cache";
 
 export const Header: GlobalConfig = {
   slug: "header",
+  hooks: {
+    afterChange: [
+      async ({ doc }) => {
+        revalidateTag("global_header", {});
+        return doc;
+      },
+    ],
+  },
   access: {
     read: () => true,
     update: ({ req: { user } }) => {

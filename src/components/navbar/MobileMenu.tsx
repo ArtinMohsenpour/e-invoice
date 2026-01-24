@@ -6,10 +6,10 @@ import { useAuth } from "@/providers/Auth";
 import { Menu, X, User } from "lucide-react";
 import { logoutAction } from "@/app/[locale]/(frontend)/actions/auth";
 import { useTranslations } from "next-intl";
-import { HeaderData } from "@/lib/payload-utils";
+import { Header } from "@/payload-types";
 
 interface MobileMenuProps {
-  navItems: HeaderData["navItems"];
+  navItems: Header["navItems"];
 }
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({ navItems }) => {
@@ -75,8 +75,10 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ navItems }) => {
                       <User className="h-4 w-4" />
                     </div>
                     <div className="text-sm">
-                      <p className="font-medium text-foreground">{t("account")}</p>
-                      <p className="text-xs text-muted-foreground truncate max-w-[150px]">
+                      <p className="font-medium text-foreground">
+                        {t("account")}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate max-w-37.5">
                         {user.email}
                       </p>
                     </div>

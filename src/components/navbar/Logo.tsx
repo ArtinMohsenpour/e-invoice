@@ -1,21 +1,19 @@
 import React from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import { HeaderData } from "@/lib/payload-utils";
+import { Header } from "@/payload-types";
 
 interface LogoProps {
-  data: HeaderData;
+  data: Header;
 }
 
 export const Logo: React.FC<LogoProps> = ({ data }) => {
   const logoData = data.logo;
   const logoUrl =
-    logoData && typeof logoData !== "string"
-      ? logoData.url
-      : (logoData as string);
+    logoData && typeof logoData === "object" ? logoData.url : null;
 
   const logoAlt =
-    (typeof logoData !== "string" && logoData?.alt) ||
+    (logoData && typeof logoData === "object" && logoData.alt) ||
     data.companyName ||
     "Logo";
 
