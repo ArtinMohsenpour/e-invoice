@@ -1,4 +1,5 @@
 import { GlobalConfig } from "payload";
+import { NavRowLabel } from "@/components/payload/NavRowLabel";
 
 export const Header: GlobalConfig = {
   slug: "header",
@@ -29,14 +30,12 @@ export const Header: GlobalConfig = {
       type: "array",
       admin: {
         description: "Define the navigation items for the header",
+        components: {
+          // @ts-expect-error RowLabel is valid for ArrayField
+          RowLabel: NavRowLabel,
+        },
       },
       fields: [
-        {
-          name: "label",
-          type: "text",
-          localized: true,
-          required: true,
-        },
         {
           name: "type",
           type: "select",
@@ -51,6 +50,12 @@ export const Header: GlobalConfig = {
             },
           ],
           defaultValue: "single",
+          required: true,
+        },
+        {
+          name: "label",
+          type: "text",
+          localized: true,
           required: true,
         },
         {

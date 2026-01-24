@@ -369,8 +369,8 @@ export interface Header {
    */
   navItems?:
     | {
-        label: string;
         type: 'single' | 'dropdown';
+        label: string;
         link?: string | null;
         subMenu?:
           | {
@@ -395,8 +395,8 @@ export interface HeaderSelect<T extends boolean = true> {
   navItems?:
     | T
     | {
-        label?: T;
         type?: T;
+        label?: T;
         link?: T;
         subMenu?:
           | T
