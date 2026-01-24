@@ -364,6 +364,9 @@ export interface Header {
   id: number;
   logo: number | Media;
   companyName?: string | null;
+  /**
+   * Define the navigation items for the header
+   */
   navItems?:
     | {
         label: string;
