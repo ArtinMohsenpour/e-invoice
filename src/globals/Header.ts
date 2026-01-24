@@ -1,14 +1,12 @@
 import { GlobalConfig } from "payload";
-import { NavRowLabel } from "@/components/payload/NavRowLabel";
 import { revalidateTag } from "next/cache";
 
 export const Header: GlobalConfig = {
   slug: "header",
   hooks: {
     afterChange: [
-      async ({ doc }) => {
+      () => {
         revalidateTag("global_header", {});
-        return doc;
       },
     ],
   },
@@ -40,8 +38,7 @@ export const Header: GlobalConfig = {
       admin: {
         description: "Define the navigation items for the header",
         components: {
-          // @ts-expect-error RowLabel is valid for ArrayField
-          RowLabel: NavRowLabel,
+          RowLabel: '/components/payload/NavRowLabel',
         },
       },
       fields: [
