@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, Suspense } from "react";
-import { resetPasswordAction } from "../actions/auth";
+import { resetPasswordAction } from "../../actions/auth";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";

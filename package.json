@@ -23,8 +23,6 @@
     "@payloadcms/next": "3.72.0",
     "@payloadcms/richtext-lexical": "3.72.0",
     "@payloadcms/ui": "3.72.0",
-    "@radix-ui/react-label": "^2.1.8",
-    "@radix-ui/react-slot": "^1.2.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cross-env": "^7.0.3",

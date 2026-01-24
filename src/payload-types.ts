@@ -87,8 +87,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'de') | ('en' | 'de')[];
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    header: Header;
+  };
+  globalsSelect: {
+    header: HeaderSelect<false> | HeaderSelect<true>;
+  };
   locale: 'en' | 'de';
   user: User & {
     collection: 'users';
@@ -351,6 +355,58 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header".
+ */
+export interface Header {
+  id: number;
+  logo: number | Media;
+  companyName?: string | null;
+  navItems?:
+    | {
+        label: string;
+        type: 'single' | 'dropdown';
+        link?: string | null;
+        subMenu?:
+          | {
+              label: string;
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header_select".
+ */
+export interface HeaderSelect<T extends boolean = true> {
+  logo?: T;
+  companyName?: T;
+  navItems?:
+    | T
+    | {
+        label?: T;
+        type?: T;
+        link?: T;
+        subMenu?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
