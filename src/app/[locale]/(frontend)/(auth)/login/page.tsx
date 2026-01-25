@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
-import { loginAction } from "../actions/auth";
+import { loginAction } from "../../actions/auth";
 import Link from "next/link";
 import { useAuth } from "@/providers/Auth";
 import { useRouter } from "next/navigation";

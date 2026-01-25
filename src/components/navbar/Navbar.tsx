@@ -1,252 +1,43 @@
-"use client";
+import { getLocale } from "next-intl/server";
+import { getHeader } from "@/data/header";
+import { Logo } from "./Logo";
+import { DesktopNav } from "./DesktopNav";
+import { MobileMenu } from "./MobileMenu";
+import { AuthStatus } from "./AuthStatus";
+import { ThemeToggle } from "./ThemeToggle";
+import { LanguageToggle } from "./LanguageToggle";
 
-import React, { useEffect, useState } from "react";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
-import { useLocale, useTranslations } from "next-intl";
-import { useTheme } from "next-themes";
-import { useAuth } from "@/providers/Auth";
-import {
-  Moon,
-  Sun,
-  Menu,
-  X,
-  LogOut,
-  LayoutDashboard,
-  FileText,
-  User,
-  Languages,
-} from "lucide-react";
-import { logoutAction } from "@/app/[locale]/(frontend)/actions/auth";
+import { NavbarWrapper } from "./NavbarWrapper";
 
-export const Navbar = () => {
-  const { user } = useAuth();
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
-  const pathname = usePathname();
-  const router = useRouter();
-  const locale = useLocale();
-  const t = useTranslations('Navbar');
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  };
-
-  const toggleLanguage = () => {
-    const nextLocale = locale === 'en' ? 'de' : 'en';
-    router.replace(pathname, { locale: nextLocale });
-  };
-
-  const isActive = (path: string) => pathname === path;
+export const Navbar = async () => {
+  const locale = await getLocale();
+  const headerData = await getHeader(locale);
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
+    <NavbarWrapper>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-14 items-center justify-between">
           {/* Logo */}
-          <div className="shrink-0 flex items-center gap-2">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="font-bold text-xl text-foreground tracking-tight">
-                Faktura
-              </span>
-            </Link>
-          </div>
+          <Logo data={headerData} />
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:gap-8">
-            <Link
-              href="/dashboard"
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                isActive("/dashboard")
-                  ? "text-primary"
-                  : "text-muted-foreground"
-              }`}
-            >
-              {t('dashboard')}
-            </Link>
-            {user && (
-              <Link
-                href="/invoices"
-                className={`text-sm font-medium transition-colors hover:text-primary ${
-                  isActive("/invoices")
-                    ? "text-primary"
-                    : "text-muted-foreground"
-                }`}
-              >
-                {t('invoices')}
-              </Link>
-            )}
-          </div>
+          <DesktopNav navItems={headerData.navItems} />
 
-          {/* Right Side Actions */}
+          {/* Right Side Actions (Desktop) */}
           <div className="hidden md:flex items-center gap-4">
-            
-             {/* Language Toggle */}
-             <button
-                onClick={toggleLanguage}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-transparent text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                aria-label="Toggle language"
-              >
-                <span className="text-xs font-bold">{locale.toUpperCase()}</span>
-              </button>
-
-            {/* Theme Toggle Button */}
-            {mounted ? (
-              <button
-                onClick={toggleTheme}
-                className="relative cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-transparent text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                aria-label={t('theme')}
-              >
-                <Sun className="h-4 w-4 transition-all scale-100 rotate-0 dark:scale-0 dark:-rotate-90 text-yellow-500" />
-                <Moon className="absolute h-4 w-4 transition-all scale-0 rotate-90 dark:scale-100 dark:rotate-0 text-blue-400" />
-              </button>
-            ) : (
-              <div className="h-9 w-9 rounded-md border border-input bg-transparent" />
-            )}
-
-            {/* Auth State */}
-            {user === undefined ? (
-              <div className="h-9 w-24 animate-pulse rounded-md bg-muted" />
-            ) : user ? (
-              <div className="flex items-center gap-3 pl-2 border-l border-border">
-                <Link
-                  href="/account"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
-                  title={t('account')}
-                >
-                  <User className="h-4 w-4" />
-                </Link>
-
-                <button
-                  onClick={() => logoutAction()}
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-                  title={t('logout')}
-                >
-                  <LogOut className="h-4 w-4" />
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-1">
-                <Link
-                  href="/login"
-                  className="inline-flex h-9 items-center justify-center rounded-md px-3 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                >
-                  {t('login')}
-                </Link>
-                <Link
-                  href="/signup"
-                  className="inline-flex h-9 items-center justify-center rounded-md px-3 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                >
-                  {t('signup')}
-                </Link>
-              </div>
-            )}
+            <LanguageToggle />
+            <ThemeToggle />
+            <AuthStatus />
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Actions & Menu */}
           <div className="flex md:hidden items-center gap-2">
-            
-            <button
-                onClick={toggleLanguage}
-                 className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-transparent text-foreground"
-              >
-                 <span className="text-xs font-bold">{locale.toUpperCase()}</span>
-              </button>
-
-            {mounted && (
-              <button
-                onClick={toggleTheme}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-transparent text-foreground"
-              >
-                <Sun className="h-4 w-4 transition-all scale-100 rotate-0 dark:scale-0 dark:-rotate-90" />
-                <Moon className="absolute h-4 w-4 transition-all scale-0 rotate-90 dark:scale-100 dark:rotate-0" />
-              </button>
-            )}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
-            </button>
+            <LanguageToggle />
+            <ThemeToggle />
+            <MobileMenu navItems={headerData.navItems} />
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-border bg-background">
-          <div className="space-y-1 px-4 py-3">
-            <Link
-              href="/dashboard"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground"
-            >
-              <LayoutDashboard className="h-4 w-4" />
-              {t('dashboard')}
-            </Link>
-            {user && (
-              <Link
-                href="/invoices"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground"
-              >
-                <FileText className="h-4 w-4" />
-                {t('invoices')}
-              </Link>
-            )}
-          </div>
-          <div className="border-t border-border px-4 py-4">
-            {user ? (
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <User className="h-4 w-4" />
-                  </div>
-                  <div className="text-sm">
-                    <p className="font-medium text-foreground">{t('account')}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {user.email}
-                    </p>
-                  </div>
-                </div>
-                <Link
-                  href="/account"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-sm font-medium text-primary hover:underline"
-                >
-                  {t('manage')}
-                </Link>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-4">
-                <Link
-                  href="/login"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex h-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm font-medium text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground"
-                >
-                  {t('login')}
-                </Link>
-                <Link
-                  href="/signup"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex h-9 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90"
-                >
-                  {t('signup')}
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </nav>
+    </NavbarWrapper>
   );
 };

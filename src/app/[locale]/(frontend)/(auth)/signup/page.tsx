@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
-import { signupAction } from "../actions/auth";
+import { signupAction } from "../../actions/auth";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { AlertCircle, CheckCircle, TriangleAlert } from "lucide-react";

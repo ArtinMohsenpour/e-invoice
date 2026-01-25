@@ -7,6 +7,7 @@ import { buildConfig } from "payload";
 import sharp from "sharp";
 import { Media } from "./collections/Media";
 import { Users } from "./collections/Users";
+import { Header } from "./globals/Header";
 
 // import { Invoices } from './collections/Invoices' // Uncomment this once you create the file
 
@@ -27,6 +28,7 @@ export default buildConfig({
   }),
   // Register your collections here
   collections: [Users, Media],
+  globals: [Header],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

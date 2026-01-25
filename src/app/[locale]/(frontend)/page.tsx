@@ -1,61 +1,59 @@
-import { fileURLToPath } from 'node:url'
-import { headers as getHeaders } from 'next/headers.js'
-import Image from 'next/image'
-import { getPayload } from 'payload'
-import { getTranslations } from 'next-intl/server'
+import { fileURLToPath } from "node:url";
+import { headers as getHeaders } from "next/headers.js";
+import Image from "next/image";
+import { getPayload } from "payload";
+import { getTranslations } from "next-intl/server";
 
-import config from '@/payload.config'
-import './styles.css'
+import config from "@/payload.config";
+import "./styles.css";
 
 export default async function HomePage() {
-  const headers = await getHeaders()
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
-  const { user } = await payload.auth({ headers })
-  
-  const t = await getTranslations('HomePage')
+  const headers = await getHeaders();
+  const payloadConfig = await config;
+  const payload = await getPayload({ config: payloadConfig });
+  const { user } = await payload.auth({ headers });
 
-  const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
+  const t = await getTranslations("HomePage");
+
+  const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`;
 
   return (
-    <div className="home">
-      <div className="content">
-        <picture>
-          <source srcSet="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg" />
-          <Image
-            alt="Payload Logo"
-            height={65}
-            src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg"
-            width={65}
-          />
-        </picture>
-        {!user && <h1>{t('welcome')}</h1>}
-        {user && <h1>{t('welcomeBack', { email: user.email as string })}</h1>}
-        <div className="links">
-          <a
-            className="admin"
-            href={payloadConfig.routes.admin}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            {t('adminPanel')}
-          </a>
-          <a
-            className="docs"
-            href="https://payloadcms.com/docs"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            {t('docs')}
-          </a>
-        </div>
-      </div>
-      <div className="footer">
-        <p>{t('footerParams')}</p>
-        <a className="codeLink" href={fileURL}>
-          <code>{t('footerPath')}</code>
-        </a>
-      </div>
+    <div className="home max-w-7xl mx-auto p-8">
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
+      <div>Hello</div>
     </div>
-  )
+  );
 }

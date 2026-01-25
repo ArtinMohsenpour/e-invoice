@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { forgotPasswordAction } from "../actions/auth";
+import { forgotPasswordAction } from "../../actions/auth";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { AlertCircle, CheckCircle2, TriangleAlert } from "lucide-react";
