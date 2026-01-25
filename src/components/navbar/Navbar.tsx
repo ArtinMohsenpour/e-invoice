@@ -7,14 +7,16 @@ import { AuthStatus } from "./AuthStatus";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
 
+import { NavbarWrapper } from "./NavbarWrapper";
+
 export const Navbar = async () => {
   const locale = await getLocale();
   const headerData = await getHeader(locale);
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
+    <NavbarWrapper>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-14 items-center justify-between">
           {/* Logo */}
           <Logo data={headerData} />
 
@@ -36,6 +38,6 @@ export const Navbar = async () => {
           </div>
         </div>
       </div>
-    </nav>
+    </NavbarWrapper>
   );
 };

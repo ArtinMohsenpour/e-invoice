@@ -4,10 +4,11 @@ import { ThemeProvider } from "@/providers/ThemeProvider";
 import "./styles.css";
 import { Navbar } from "@/components/navbar/Navbar";
 import { getMeUser } from "@/app/[locale]/(frontend)/actions/auth"; // We will fix this import path later if we move actions
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
-import { notFound } from 'next/navigation';
-import { routing } from '@/i18n/routing';
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
+import { cookies } from "next/headers";
 
 export const metadata = {
   description: "A blank template using Payload in a Next.js app.",
@@ -21,6 +22,8 @@ export default async function RootLayout(props: {
   const params = await props.params;
   const { locale } = params;
   const { children } = props;
+  const cookieStore = await cookies();
+  const themeCookie = cookieStore.get("theme")?.value || "light";
 
   // Ensure that the incoming `locale` is valid
   if (!routing.locales.includes(locale as any)) {
@@ -34,21 +37,22 @@ export default async function RootLayout(props: {
   const user = await getMeUser();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} className={themeCookie} suppressHydrationWarning>
       <body>
-        <NextIntlClientProvider messages={messages}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          value={{ light: "light", dark: "dark" }}
+          disableTransitionOnChange
+        >
+          <NextIntlClientProvider messages={messages}>
             <AuthProvider initialUser={user}>
               <Navbar />
               <main>{children}</main>
             </AuthProvider>
-          </ThemeProvider>
-        </NextIntlClientProvider>
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

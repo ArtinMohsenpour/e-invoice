@@ -11,7 +11,17 @@ interface DesktopNavProps {
 
 export const DesktopNav: React.FC<DesktopNavProps> = ({ navItems }) => {
   const pathname = usePathname();
-  const isActive = (path: string) => pathname === path;
+  const isActive = (path: string | null | undefined) => {
+    if (!path) return false;
+    // Normalize: ensure leading slash, remove trailing slash (unless root)
+    const normalize = (p: string) => {
+      const withLeading = p.startsWith("/") ? p : `/${p}`;
+      return withLeading.length > 1 && withLeading.endsWith("/")
+        ? withLeading.slice(0, -1)
+        : withLeading;
+    };
+    return normalize(pathname) === normalize(path);
+  };
 
   return (
     <div className="hidden md:flex md:items-center md:gap-6">

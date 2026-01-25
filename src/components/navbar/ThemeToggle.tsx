@@ -4,34 +4,72 @@ import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { motion } from "framer-motion";
 
 export const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const t = useTranslations("Navbar");
 
+  // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  };
-
   if (!mounted) {
-    return (
-      <div className="h-9 w-9 rounded-md border border-input bg-transparent" />
-    );
+    return <div className="h-8 w-14 rounded-full bg-muted animate-pulse" />;
   }
+
+  const isDark = theme === "dark";
+
+  const toggleTheme = () => {
+    const newTheme = isDark ? "light" : "dark";
+    setTheme(newTheme);
+    // Set a cookie so the server knows the theme on the next request (language change)
+    document.cookie = `theme=${newTheme}; path=/; max-age=31536000; SameSite=Lax`;
+  };
 
   return (
     <button
       onClick={toggleTheme}
-      className="relative cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-transparent text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+      className="relative flex h-6 w-12 max-w-[51px] cursor-pointer items-center rounded-full p-0.5 transition-colors duration-500 shadow-inner bg-accent"
       aria-label={t("theme")}
     >
-      <Sun className="h-4 w-4 transition-all scale-100 rotate-0 dark:scale-0 dark:-rotate-90 text-yellow-500" />
-      <Moon className="absolute h-4 w-4 transition-all scale-0 rotate-90 dark:scale-100 dark:rotate-0 text-blue-400" />
+      {/* Background Icons */}
+      <div className="absolute inset-0 flex items-center justify-between px-1">
+        <Moon
+          className={`h-3.5 w-4 transition-opacity duration-500 ${
+            isDark ? "opacity-100 text-secondary-foreground" : "opacity-0"
+          }`}
+        />
+        <Sun
+          className={`h-3.5 w-4 transition-opacity duration-500 ${
+            isDark ? "opacity-0" : "opacity-100 text-secondary-foreground"
+          }`}
+        />
+      </div>
+
+      {/* The Sliding Knob */}
+      <motion.div
+        className="z-10 h-5 w-5 rounded-full bg-background shadow-sm flex items-center justify-center"
+        initial={false}
+        animate={{
+          x: isDark ? 24 : 0,
+          rotate: isDark ? 360 : 0,
+        }}
+        whileTap={{ scale: 0.8 }}
+        transition={{
+          type: "spring",
+          stiffness: 260,
+          damping: 15,
+        }}
+      >
+        {/* Decorative inner element */}
+        <motion.div
+          className="h-1.5 w-1.5 rounded-full bg-ring"
+          animate={{ scale: isDark ? 1 : 0.8 }}
+        />
+      </motion.div>
     </button>
   );
 };
