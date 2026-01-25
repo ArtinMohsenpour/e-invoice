@@ -89,9 +89,11 @@ export interface Config {
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'de') | ('en' | 'de')[];
   globals: {
     header: Header;
+    'dashboard-nav': DashboardNav;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
+    'dashboard-nav': DashboardNavSelect<false> | DashboardNavSelect<true>;
   };
   locale: 'en' | 'de';
   user: User & {
@@ -387,6 +389,21 @@ export interface Header {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dashboard-nav".
+ */
+export interface DashboardNav {
+  id: number;
+  navItems: {
+    label: string;
+    link: string;
+    icon: number | Media;
+    id?: string | null;
+  }[];
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -405,6 +422,23 @@ export interface HeaderSelect<T extends boolean = true> {
               url?: T;
               id?: T;
             };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dashboard-nav_select".
+ */
+export interface DashboardNavSelect<T extends boolean = true> {
+  navItems?:
+    | T
+    | {
+        label?: T;
+        link?: T;
+        icon?: T;
         id?: T;
       };
   updatedAt?: T;

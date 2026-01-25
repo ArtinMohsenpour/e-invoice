@@ -29,7 +29,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({ navItems }) => {
         <div key={i} className="relative group">
           {item.type === "single" && item.link ? (
             <Link
-              href={item.link}
+              href={item.link.startsWith("/") ? item.link : `/${item.link}`}
               className={`text-sm font-medium transition-colors hover:text-primary ${
                 isActive(item.link) ? "text-primary" : "text-muted-foreground"
               }`}

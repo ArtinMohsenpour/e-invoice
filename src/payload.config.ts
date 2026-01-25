@@ -8,6 +8,7 @@ import sharp from "sharp";
 import { Media } from "./collections/Media";
 import { Users } from "./collections/Users";
 import { Header } from "./globals/Header";
+import { DashboardNav } from "./globals/DashboardNav";
 
 // import { Invoices } from './collections/Invoices' // Uncomment this once you create the file
 
@@ -25,10 +26,10 @@ export default buildConfig({
     defaultFromAddress: "onboarding@resend.dev",
     defaultFromName: "Faktura",
     apiKey: process.env.RESEND_API_KEY || "",
-  }),
+  },),
   // Register your collections here
   collections: [Users, Media],
-  globals: [Header],
+  globals: [Header, DashboardNav],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
