@@ -6,11 +6,7 @@ import { useAuth } from "@/providers/Auth";
 import { Menu, X, User } from "lucide-react";
 import { logoutAction } from "@/app/[locale]/(frontend)/actions/auth";
 import { useTranslations } from "next-intl";
-import { Header } from "@/payload-types";
-
-interface MobileMenuProps {
-  navItems: Header["navItems"];
-}
+import { MobileMenuProps } from "@/lib/types";
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({ navItems }) => {
   const [isOpen, setIsOpen] = useState(false);

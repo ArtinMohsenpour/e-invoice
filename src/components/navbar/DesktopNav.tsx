@@ -2,12 +2,8 @@
 
 import React from "react";
 import { Link, usePathname } from "@/i18n/routing";
-import { Header } from "@/payload-types";
 import { ChevronDown } from "lucide-react";
-
-interface DesktopNavProps {
-  navItems: Header["navItems"];
-}
+import { DesktopNavProps } from "@/lib/types";
 
 export const DesktopNav: React.FC<DesktopNavProps> = ({ navItems }) => {
   const pathname = usePathname();

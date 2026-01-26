@@ -49,7 +49,7 @@ export default async function RootLayout(props: {
           <NextIntlClientProvider messages={messages}>
             <AuthProvider initialUser={user}>
               <Navbar />
-              <main>{children}</main>
+              <main className="pt-14">{children}</main>
             </AuthProvider>
           </NextIntlClientProvider>
         </ThemeProvider>

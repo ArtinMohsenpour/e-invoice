@@ -22,6 +22,11 @@ export const DashboardNav: GlobalConfig = {
       type: "array",
       required: true,
       minRows: 1,
+      admin: {
+        components: {
+          RowLabel: "/components/payload/NavRowLabel",
+        },
+      },
       fields: [
         {
           name: "label",

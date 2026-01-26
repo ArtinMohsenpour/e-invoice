@@ -1,11 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import { Header } from "@/payload-types";
-
-interface LogoProps {
-  data: Header;
-}
+import { LogoProps } from "@/lib/types";
 
 export const Logo: React.FC<LogoProps> = ({ data }) => {
   const logoData = data.logo;

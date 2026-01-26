@@ -6,15 +6,18 @@ import { MobileMenu } from "./MobileMenu";
 import { AuthStatus } from "./AuthStatus";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
-
-import { NavbarWrapper } from "./NavbarWrapper";
+import { cn } from "@/lib/utils";
 
 export const Navbar = async () => {
   const locale = await getLocale();
   const headerData = await getHeader(locale);
 
   return (
-    <NavbarWrapper>
+    <nav
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 w-full border-b border-border bg-background",
+      )}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-14 items-center justify-between">
           {/* Logo */}
@@ -38,6 +41,6 @@ export const Navbar = async () => {
           </div>
         </div>
       </div>
-    </NavbarWrapper>
+    </nav>
   );
 };
