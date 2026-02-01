@@ -49,6 +49,19 @@
     "title": "Dashboard",
     "welcome": "Welcome to your dashboard"
   },
+  "Settings": {
+    "title": "Preferences",
+    "description": "Manage your account settings and preferences.",
+    "languageLabel": "Language",
+    "languageDescription": "Select your preferred language for the interface.",
+    "themeLabel": "Theme",
+    "themeDescription": "Select the color theme for the dashboard.",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "saveChanges": "Save Changes",
+    "savedSuccessfully": "Preferences saved!"
+  },
   "Common": {
     "loading": "Loading..."
   },

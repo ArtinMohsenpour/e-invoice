@@ -49,6 +49,19 @@
     "title": "Dashboard",
     "welcome": "Willkommen in Ihrem Dashboard"
   },
+  "Settings": {
+    "title": "Einstellungen",
+    "description": "Verwalten Sie Ihre Kontoeinstellungen und Präferenzen.",
+    "languageLabel": "Sprache",
+    "languageDescription": "Wählen Sie Ihre bevorzugte Sprache für die Benutzeroberfläche.",
+    "themeLabel": "Design",
+    "themeDescription": "Wählen Sie das Farbthema für das Dashboard.",
+    "themeLight": "Hell",
+    "themeDark": "Dunkel",
+    "themeSystem": "System",
+    "saveChanges": "Änderungen speichern",
+    "savedSuccessfully": "Einstellungen gespeichert!"
+  },
   "Common": {
     "loading": "Laden..."
   },
