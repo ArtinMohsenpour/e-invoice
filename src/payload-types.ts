@@ -69,6 +69,8 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    organizations: Organization;
+    'credit-transactions': CreditTransaction;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +80,8 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    organizations: OrganizationsSelect<false> | OrganizationsSelect<true>;
+    'credit-transactions': CreditTransactionsSelect<false> | CreditTransactionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -129,29 +133,19 @@ export interface UserAuthOperations {
 export interface User {
   id: number;
   role: 'admin' | 'user';
+  orgRole?: ('owner' | 'manager' | 'accountant') | null;
+  organization?: (number | null) | Organization;
   /**
    * Disable user access without deleting
    */
   active?: boolean | null;
   lastLogin?: string | null;
-  onboardingComplete?: boolean | null;
-  plan: 'basic' | 'pro' | 'enterprise';
-  subscriptionStatus?: ('trialing' | 'active' | 'past_due' | 'canceled') | null;
-  /**
-   * Total paid amount
-   */
-  paid?: number | null;
-  /**
-   * Next billing date
-   */
-  due?: string | null;
-  stripeCustomerId?: string | null;
   firstName?: string | null;
   lastName?: string | null;
-  companyName?: string | null;
   phoneNumber?: string | null;
   avatar?: (number | null) | Media;
   language?: ('en' | 'de') | null;
+  theme?: ('light' | 'dark' | 'system') | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -172,6 +166,26 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizations".
+ */
+export interface Organization {
+  id: number;
+  name: string;
+  taxId?: string | null;
+  phoneNumber?: string | null;
+  address?: {
+    street?: string | null;
+    city?: string | null;
+    zip?: string | null;
+    country?: string | null;
+  };
+  plan?: ('none' | 'basic' | 'pro' | 'ultimate') | null;
+  creditsRemaining?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
@@ -188,6 +202,19 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "credit-transactions".
+ */
+export interface CreditTransaction {
+  id: number;
+  organization: number | Organization;
+  amount: number;
+  type: 'generation' | 'topup' | 'refund';
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -220,6 +247,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'organizations';
+        value: number | Organization;
+      } | null)
+    | ({
+        relationTo: 'credit-transactions';
+        value: number | CreditTransaction;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -269,20 +304,16 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   role?: T;
+  orgRole?: T;
+  organization?: T;
   active?: T;
   lastLogin?: T;
-  onboardingComplete?: T;
-  plan?: T;
-  subscriptionStatus?: T;
-  paid?: T;
-  due?: T;
-  stripeCustomerId?: T;
   firstName?: T;
   lastName?: T;
-  companyName?: T;
   phoneNumber?: T;
   avatar?: T;
   language?: T;
+  theme?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -317,6 +348,39 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizations_select".
+ */
+export interface OrganizationsSelect<T extends boolean = true> {
+  name?: T;
+  taxId?: T;
+  phoneNumber?: T;
+  address?:
+    | T
+    | {
+        street?: T;
+        city?: T;
+        zip?: T;
+        country?: T;
+      };
+  plan?: T;
+  creditsRemaining?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "credit-transactions_select".
+ */
+export interface CreditTransactionsSelect<T extends boolean = true> {
+  organization?: T;
+  amount?: T;
+  type?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

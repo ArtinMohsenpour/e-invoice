@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { setRequestLocale } from "next-intl/server";
 import { getDashboardNav } from "@/data/dashboard-nav";
+import { UserPreferencesSync } from "@/components/UserPreferencesSync";
 
 export default async function DashboardLayout({
   children,
@@ -54,6 +55,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-background lg:flex-row">
+      <UserPreferencesSync user={user} />
       <Sidebar user={user} navItems={navItems} />
 
       <div className="flex flex-col w-full lg:pl-64">

@@ -91,7 +91,8 @@ export async function signupAction(prevState: any, formData: FormData) {
       data: {
         email: result.data.email,
         password: result.data.password,
-        companyName: result.data.companyName,
+        firstName: result.data.firstName,
+        lastName: result.data.lastName,
       } as any,
     });
 

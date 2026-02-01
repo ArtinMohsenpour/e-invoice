@@ -34,10 +34,19 @@ export const Users: CollectionConfig = {
   },
   admin: {
     useAsTitle: "email",
-    defaultColumns: ["email", "role", "plan", "active"],
+    defaultColumns: ["email", "role", "orgRole", "organization"],
   },
   access: {
+    // Only 'admin' role can access the CMS /admin directory
+    admin: ({ req: { user } }) => user?.role === 'admin',
+    
+    // Users can read themselves
     read: ({ req: { user } }) => {
+      if (user?.role === "admin") return true;
+      if (!user) return false;
+      return { id: { equals: user.id } };
+    },
+    update: ({ req: { user } }) => {
       if (user?.role === "admin") return true;
       if (!user) return false;
       return { id: { equals: user.id } };
@@ -67,6 +76,35 @@ export const Users: CollectionConfig = {
                   },
                 },
                 {
+                   name: 'orgRole',
+                   type: 'select',
+                   options: [
+                     { label: 'Owner', value: 'owner' },
+                     { label: 'Manager', value: 'manager' },
+                     { label: 'Accountant', value: 'accountant' },
+                   ],
+                   access: {
+                     update: ({ req: { user } }) => user?.role === "admin",
+                   },
+                },
+              ],
+            },
+            {
+              name: 'organization',
+              type: 'relationship',
+              relationTo: 'organizations',
+              index: true,
+              admin: {
+                position: 'sidebar',
+              },
+              access: {
+                update: ({ req: { user } }) => user?.role === "admin",
+              },
+            },
+            {
+              type: "row",
+              fields: [
+                {
                   name: "active",
                   type: "checkbox",
                   defaultValue: true,
@@ -74,11 +112,6 @@ export const Users: CollectionConfig = {
                     description: "Disable user access without deleting",
                   },
                 },
-              ],
-            },
-            {
-              type: "row",
-              fields: [
                 {
                   name: "lastLogin",
                   type: "date",
@@ -89,66 +122,7 @@ export const Users: CollectionConfig = {
                     },
                   },
                 },
-                {
-                  name: "onboardingComplete",
-                  type: "checkbox",
-                  defaultValue: false,
-                },
               ],
-            },
-          ],
-        },
-        {
-          label: "Subscription",
-          fields: [
-            {
-              type: "row",
-              fields: [
-                {
-                  name: "plan",
-                  type: "select",
-                  required: true,
-                  defaultValue: "basic",
-                  options: [
-                    { label: "Basic", value: "basic" },
-                    { label: "Pro", value: "pro" },
-                    { label: "Enterprise", value: "enterprise" },
-                  ],
-                },
-                {
-                  name: "subscriptionStatus",
-                  type: "select",
-                  defaultValue: "trialing",
-                  options: [
-                    { label: "Trialing", value: "trialing" },
-                    { label: "Active", value: "active" },
-                    { label: "Past Due", value: "past_due" },
-                    { label: "Canceled", value: "canceled" },
-                  ],
-                },
-              ],
-            },
-            {
-              type: "row",
-              fields: [
-                {
-                  name: "paid",
-                  type: "number",
-                  admin: { description: "Total paid amount" },
-                },
-                {
-                  name: "due",
-                  type: "date",
-                  admin: { description: "Next billing date" },
-                },
-              ],
-            },
-            {
-              name: "stripeCustomerId",
-              type: "text",
-              admin: {
-                position: "sidebar",
-              },
             },
           ],
         },
@@ -162,7 +136,6 @@ export const Users: CollectionConfig = {
                 { name: "lastName", type: "text" },
               ],
             },
-            { name: "companyName", type: "text" },
             { name: "phoneNumber", type: "text" },
             {
               type: "row",
@@ -175,10 +148,20 @@ export const Users: CollectionConfig = {
                 {
                   name: "language",
                   type: "select",
-                  defaultValue: "de",
+                  defaultValue: "en",
                   options: [
                     { label: "English", value: "en" },
                     { label: "German", value: "de" },
+                  ],
+                },
+                {
+                  name: "theme",
+                  type: "select",
+                  defaultValue: "system",
+                  options: [
+                    { label: "Light", value: "light" },
+                    { label: "Dark", value: "dark" },
+                    { label: "System", value: "system" },
                   ],
                 },
               ],

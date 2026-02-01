@@ -22,10 +22,14 @@ export type LoginInput = z.infer<typeof LoginSchema>;
 
 // Signup
 export const SignupSchema = z.object({
-  companyName: z
+  firstName: z
     .string()
-    .min(2, { message: "Company name must be at least 2 characters" })
-    .max(100, { message: "Company name cannot exceed 100 characters" }),
+    .min(2, { message: "First name must be at least 2 characters" })
+    .max(50, { message: "First name cannot exceed 50 characters" }),
+  lastName: z
+    .string()
+    .min(2, { message: "Last name must be at least 2 characters" })
+    .max(50, { message: "Last name cannot exceed 50 characters" }),
   email: z
     .string()
     .email({ message: "Invalid email address" })

@@ -58,34 +58,65 @@ export default function SignupPage() {
           </p>
         </div>
         <form action={action} className="space-y-4" noValidate>
-          <div className="space-y-2">
-            <label
-              htmlFor="companyName"
-              className="text-sm font-medium text-foreground"
-            >
-              {t('companyNameLabel')}
-            </label>
-            <input
-              id="companyName"
-              name="companyName"
-              type="text"
-              placeholder="Acme Inc."
-              required
-              defaultValue={state?.fields?.companyName as string}
-              className={cn(
-                "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-                fieldErrors?.companyName &&
-                  "border-destructive focus:ring-destructive",
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label
+                htmlFor="firstName"
+                className="text-sm font-medium text-foreground"
+              >
+                {t('firstNameLabel')}
+              </label>
+              <input
+                id="firstName"
+                name="firstName"
+                type="text"
+                placeholder="Lucas"
+                required
+                defaultValue={state?.fields?.firstName as string}
+                className={cn(
+                  "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                  fieldErrors?.firstName &&
+                    "border-destructive focus:ring-destructive",
+                )}
+              />
+              {fieldErrors?.firstName && (
+                <div className="flex items-center gap-2 mt-1 text-destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <p className="text-xs font-medium">
+                    {fieldErrors.firstName[0]}
+                  </p>
+                </div>
               )}
-            />
-            {fieldErrors?.companyName && (
-              <div className="flex items-center gap-2 mt-1 text-destructive">
-                <AlertCircle className="h-4 w-4" />
-                <p className="text-xs font-medium">
-                  {fieldErrors.companyName[0]}
-                </p>
-              </div>
-            )}
+            </div>
+            <div className="space-y-2">
+              <label
+                htmlFor="lastName"
+                className="text-sm font-medium text-foreground"
+              >
+                {t('lastNameLabel')}
+              </label>
+              <input
+                id="lastName"
+                name="lastName"
+                type="text"
+                placeholder="Müller"
+                required
+                defaultValue={state?.fields?.lastName as string}
+                className={cn(
+                  "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                  fieldErrors?.lastName &&
+                    "border-destructive focus:ring-destructive",
+                )}
+              />
+              {fieldErrors?.lastName && (
+                <div className="flex items-center gap-2 mt-1 text-destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <p className="text-xs font-medium">
+                    {fieldErrors.lastName[0]}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="space-y-2">
