@@ -38,8 +38,8 @@ export const Users: CollectionConfig = {
   },
   access: {
     // Only 'admin' role can access the CMS /admin directory
-    admin: ({ req: { user } }) => user?.role === 'admin',
-    
+    admin: ({ req: { user } }) => user?.role === "admin",
+
     // Users can read themselves
     read: ({ req: { user } }) => {
       if (user?.role === "admin") return true;
@@ -76,26 +76,27 @@ export const Users: CollectionConfig = {
                   },
                 },
                 {
-                   name: 'orgRole',
-                   type: 'select',
-                   options: [
-                     { label: 'Owner', value: 'owner' },
-                     { label: 'Manager', value: 'manager' },
-                     { label: 'Accountant', value: 'accountant' },
-                   ],
-                   access: {
-                     update: ({ req: { user } }) => user?.role === "admin",
-                   },
+                  name: "orgRole",
+                  type: "select",
+                  defaultValue: "owner",
+                  options: [
+                    { label: "Owner", value: "owner" },
+                    { label: "Manager", value: "manager" },
+                    { label: "Accountant", value: "accountant" },
+                  ],
+                  access: {
+                    update: ({ req: { user } }) => user?.role === "admin",
+                  },
                 },
               ],
             },
             {
-              name: 'organization',
-              type: 'relationship',
-              relationTo: 'organizations',
+              name: "organization",
+              type: "relationship",
+              relationTo: "organizations",
               index: true,
               admin: {
-                position: 'sidebar',
+                position: "sidebar",
               },
               access: {
                 update: ({ req: { user } }) => user?.role === "admin",
