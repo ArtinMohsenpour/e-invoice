@@ -1,22 +1,49 @@
 export function isLinkActive(pathname: string, link: string): boolean {
-  const cleanPathname = pathname.endsWith("/") && pathname.length > 1 
-    ? pathname.slice(0, -1) 
-    : pathname;
-    
-  const cleanLink = link.endsWith("/") && link.length > 1 
-    ? link.slice(0, -1) 
-    : link;
+  // 1. Resolve Target Link
+  //    Handle CMS relative links:
+  //    "" or " " -> "/dashboard"
+  //    "settings" -> "/dashboard/settings"
+  let targetLink = link.trim();
+  
+  if (!targetLink.startsWith("/")) {
+    if (targetLink === "") {
+      targetLink = "/dashboard";
+    } else {
+      targetLink = `/dashboard/${targetLink}`;
+    }
+  }
 
-  if (cleanPathname === cleanLink) {
+  // 2. Normalize Pathname (Handle Locales)
+  //    If pathname includes locale (e.g. "/en/dashboard"), strip it to compare against logical paths.
+  let cleanPath = pathname;
+  // Regex matches start of string, slash, 2 letters, and either end of string or another slash
+  const localePrefix = cleanPath.match(/^\/[a-z]{2}(\/|$)/);
+  
+  if (localePrefix) {
+    // Remove the "/en" part. If result is empty (was just "/en"), make it "/".
+    cleanPath = cleanPath.replace(/^\/[a-z]{2}/, "") || "/";
+  }
+  
+  // Normalize trailing slashes for both
+  cleanPath = cleanPath.replace(/\/+$/, "") || "/";
+  targetLink = targetLink.replace(/\/+$/, "") || "/";
+
+  // 3. Match Logic
+
+  // Case A: Root Dashboard Link
+  // It should ONLY match if the path is exactly "/dashboard".
+  // It should NOT match "/dashboard/generate".
+  if (targetLink === "/dashboard") {
+    return cleanPath === "/dashboard";
+  }
+
+  // Case B: Other Links (e.g. "/dashboard/settings")
+  // 1. Exact match (e.g. "/dashboard/settings")
+  if (cleanPath === targetLink) {
     return true;
   }
-
-  // Prevent root "/dashboard" from matching everything like "/dashboard/settings"
-  // unless that is the desired behavior (usually distinct links for subpages).
-  // The prompt says: "ensure /dashboard doesn't match every sub-route"
-  if (cleanLink === "/dashboard") {
-    return false;
-  }
-
-  return cleanPathname.startsWith(cleanLink);
+  
+  // 2. Sub-path match (e.g. "/dashboard/settings/profile")
+  //    Must ensure it's a directory match (followed by /)
+  return cleanPath.startsWith(`${targetLink}/`);
 }

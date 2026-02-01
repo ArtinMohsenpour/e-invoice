@@ -2,10 +2,72 @@
 
 import { useState, useEffect } from "react";
 import { Link, usePathname } from "@/i18n/routing";
-import { cn } from "@/lib/utils";
 import { ChevronDown, Menu } from "lucide-react";
 import Image from "next/image";
-import { SidebarProps } from "@/lib/types";
+import { isLinkActive } from "@/lib/nav-utils";
+import type { SidebarProps } from "@/lib/types";
+
+// Extracted for performance to prevent re-renders of the list when Sidebar state changes
+function NavLinks({ items, pathname }: { items: SidebarProps["navItems"]; pathname: string }) {
+  return (
+    <nav className="flex flex-col gap-1 px-2 text-sm font-medium lg:px-4">
+      {items.map((item, index) => {
+        // Use the centralized robust logic for active state
+        const isActive = isLinkActive(pathname, item.link);
+        
+        return (
+          <Link
+            key={item.link + index}
+            href={item.link}
+            className={`group flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted ${
+              isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {item.icon.url ? (
+              <div className="relative h-5 w-5 shrink-0">
+                <Image
+                  src={item.icon.url}
+                  alt={item.icon.alt}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            ) : null}
+            <span>{item.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
+function UserProfile({ user }: { user: SidebarProps["user"] }) {
+  if (!user) return null;
+
+  const displayName = user.firstName && user.lastName 
+    ? `${user.firstName} ${user.lastName}`
+    : user.firstName || user.email || "User";
+    
+  const initial = (user.firstName?.charAt(0) || user.email?.charAt(0) || "U").toUpperCase();
+
+  return (
+    <div className="mt-auto border-t p-4">
+      <div className="flex items-center gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
+          {initial}
+        </div>
+        <div className="flex flex-col overflow-hidden">
+          <span className="truncate text-sm font-medium text-foreground">
+            {displayName}
+          </span>
+          <span className="truncate text-xs text-muted-foreground">
+            {user.email}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function Sidebar({ user, navItems }: SidebarProps) {
   const pathname = usePathname();
@@ -16,113 +78,54 @@ export function Sidebar({ user, navItems }: SidebarProps) {
     setIsOpen(false);
   }, [pathname]);
 
-  const activeItem =
-    navItems.find(
-      (item) =>
-        pathname === item.link ||
-        (item.link !== "/dashboard" && pathname.startsWith(item.link)),
-    ) || navItems[0];
-
-  const SidebarContent = ({ className }: { className?: string }) => (
-    <div className={cn("flex flex-col gap-4", className)}>
-      <div className="flex-1">
-        <nav className="grid items-start px-2 text-sm font-medium lg:px-4 min-[1920px]:text-base">
-          {navItems.map((item, index) => {
-            const isActive =
-              pathname === item.link ||
-              (item.link !== "/dashboard" && pathname.startsWith(item.link));
-
-            return (
-              <Link
-                key={item.link + index}
-                href={item.link}
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary",
-                  isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground",
-                )}
-              >
-                {item.icon.url && (
-                  <div className="relative h-6 w-6 min-[1920px]:h-8 min-[1920px]:w-8">
-                    <Image
-                      src={item.icon.url}
-                      alt={item.icon.alt}
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                )}
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-      </div>
-      {user && (
-        <div className="mt-auto border-t items-center px-4 pt-4 md:mb-10">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 min-[1920px]:h-10 min-[1920px]:w-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
-              <span className="text-xs font-medium text-muted-foreground min-[1920px]:text-sm">
-                {user.firstName?.charAt(0) || user.email?.charAt(0) || "U"}
-              </span>
-            </div>
-            <div className="flex flex-col overflow-hidden">
-              <span className="truncate text-sm font-medium min-[1920px]:text-base">
-                {user.firstName && user.lastName
-                  ? `${user.firstName} ${user.lastName}`
-                  : user.firstName || user.email || "User"}
-              </span>
-              <span className="truncate text-xs text-muted-foreground min-[1920px]:text-sm">
-                {user.email}
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  const activeItem = navItems.find((item) => isLinkActive(pathname, item.link));
 
   return (
     <>
-      {/* Mobile Trigger - Positioned below the main navbar (top-14) */}
-      <div className="fixed top-14 left-0 z-30 w-full border-b bg-background lg:hidden">
+      {/* Mobile Trigger */}
+      <div className="fixed left-0 top-14 z-30 w-full border-b bg-background lg:hidden">
         <button
           type="button"
-          className="flex h-14 w-full items-center justify-between px-4 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           onClick={() => setIsOpen(!isOpen)}
+          className="flex h-14 w-full items-center justify-between px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20"
         >
-          <Menu className="h-5 w-5" />
-          <span className="font-semibold text-lg">
-            {activeItem?.label || "Dashboard"}
-          </span>
+          <div className="flex items-center gap-3">
+            <Menu className="h-5 w-5 text-muted-foreground" />
+            <span className="text-foreground">
+              {activeItem?.label || "Dashboard"}
+            </span>
+          </div>
           <ChevronDown
-            className={cn(
-              "h-5 w-5 transition-transform duration-200",
-              isOpen && "rotate-180",
-            )}
+            className={`h-5 w-5 text-muted-foreground transition-transform duration-200 ${
+              isOpen ? "rotate-180" : ""
+            }`}
           />
         </button>
 
-        {/* Mobile Dropdown */}
+        {/* CSS Grid Animation Trick for smooth height transition */}
         <div
-          className={cn(
-            "grid transition-all duration-200 ease-in-out",
-            isOpen
-              ? "grid-rows-[1fr] opacity-100"
-              : "grid-rows-[0fr] opacity-0",
-          )}
+          className={`grid border-b bg-background transition-all duration-300 ease-in-out ${
+            isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+          }`}
         >
-          <div className="overflow-hidden">
-            <SidebarContent className="pb-4 pt-2" />
+          <div className="min-h-0 overflow-hidden">
+            <div className="py-4">
+              <NavLinks items={navItems} pathname={pathname} />
+              <div className="mt-4 px-2">
+                 <UserProfile user={user} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Desktop Sidebar - Fixed below the main navbar */}
-      <div className="hidden border-r bg-card lg:fixed lg:top-14 lg:bottom-0 lg:left-0 lg:flex lg:w-64 lg:flex-col lg:z-30">
-        <SidebarContent className="h-full pt-7" />
-      </div>
+      {/* Desktop Sidebar */}
+      <aside className="hidden w-64 flex-col border-r bg-card lg:fixed lg:bottom-0 lg:left-0 lg:top-14 lg:flex lg:z-30">
+        <div className="flex flex-1 flex-col gap-4 py-6">
+          <NavLinks items={navItems} pathname={pathname} />
+          <UserProfile user={user} />
+        </div>
+      </aside>
     </>
   );
 }
