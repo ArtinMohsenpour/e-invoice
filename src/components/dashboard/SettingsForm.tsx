@@ -67,7 +67,7 @@ function CustomSelect({ value, onChange, options }: CustomSelectProps) {
                 onChange(option.value);
                 setIsOpen(false);
               }}
-              className="relative flex w-full cursor-pointer select-none items-center rounded-md px-3 py-2 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+              className="relative flex w-full cursor-pointer select-none items-center rounded-md px-3 py-2 text-sm outline-none transition-colors hover:bg-foreground/10 hover:text-accent-foreground"
             >
               <span className="flex-1 truncate">{option.label}</span>
               {value === option.value && <Check className="ml-2 h-4 w-4" />}

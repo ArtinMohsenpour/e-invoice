@@ -1,4 +1,4 @@
-import { User, Header } from "@/payload-types";
+import { User, Header, Organization } from "@/payload-types";
 import { ReactNode } from "react";
 
 // Dashboard / Sidebar Types
@@ -29,3 +29,16 @@ export interface LogoProps {
   data: Header;
 }
 
+// Profile Types
+export interface ProfileClientProps {
+  user: User;
+  organization: Organization | null;
+}
+
+// UI Component Types
+export interface CountrySelectorProps {
+  value?: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+  error?: string;
+}

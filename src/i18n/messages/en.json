@@ -62,6 +62,32 @@
     "saveChanges": "Save Changes",
     "savedSuccessfully": "Preferences saved!"
   },
+  "Profile": {
+    "title": "Profile & Organization",
+    "personalInfo": "Personal Information",
+    "personalInfoDesc": "Manage your personal details and contact information.",
+    "companyInfo": "Organization Settings",
+    "companyInfoDesc": "Manage your company details and business address.",
+    "uploadAvatar": "Upload Avatar",
+    "deleteOrg": "Delete Organization",
+    "deleteOrgDesc": "Permanently delete your organization and all associated data. This action cannot be undone.",
+    "deleteOrgButton": "Delete Organization",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "readOnly": "Read-only"
+  },
+  "fields": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email Address",
+    "phoneNumber": "Phone Number",
+    "orgName": "Organization Name",
+    "taxId": "Tax ID / VAT",
+    "street": "Street Address",
+    "city": "City",
+    "zip": "ZIP / Postal Code",
+    "country": "Country"
+  },
   "Common": {
     "loading": "Loading..."
   },

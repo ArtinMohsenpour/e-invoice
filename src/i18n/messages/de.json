@@ -62,6 +62,32 @@
     "saveChanges": "Änderungen speichern",
     "savedSuccessfully": "Einstellungen gespeichert!"
   },
+  "Profile": {
+    "title": "Profil & Organisation",
+    "personalInfo": "Persönliche Informationen",
+    "personalInfoDesc": "Verwalten Sie Ihre persönlichen Daten und Kontaktinformationen.",
+    "companyInfo": "Organisationseinstellungen",
+    "companyInfoDesc": "Verwalten Sie Ihre Firmendaten und Geschäftsadresse.",
+    "uploadAvatar": "Avatar hochladen",
+    "deleteOrg": "Organisation löschen",
+    "deleteOrgDesc": "Löschen Sie Ihre Organisation und alle zugehörigen Daten dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "deleteOrgButton": "Organisation löschen",
+    "saveChanges": "Änderungen speichern",
+    "saving": "Speichern...",
+    "readOnly": "Nur Lesen"
+  },
+  "fields": {
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "email": "E-Mail-Adresse",
+    "phoneNumber": "Telefonnummer",
+    "orgName": "Organisationsname",
+    "taxId": "Steuer-ID / USt-ID",
+    "street": "Straße",
+    "city": "Stadt",
+    "zip": "PLZ",
+    "country": "Land"
+  },
   "Common": {
     "loading": "Laden..."
   },

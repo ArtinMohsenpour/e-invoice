@@ -58,3 +58,29 @@ export const ResetPasswordSchema = z
     path: ["confirmPassword"],
   });
 export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>;
+
+// Profile (Personal Info)
+export const ProfileSchema = z.object({
+  firstName: z.string().min(1, "Required"),
+  lastName: z.string().min(1, "Required"),
+  phoneNumber: z.string().optional(),
+});
+export type ProfileInput = z.infer<typeof ProfileSchema>;
+
+// Organization
+export const OrganizationSchema = z.object({
+  name: z.string().min(2, "Company name is too short"),
+  // Required for legal documents
+  taxId: z.string().min(5, "Valid Tax/VAT ID required"), 
+  phoneNumber: z.string().min(6, "Invalid phone number"),
+  address: z.object({
+    street: z.string().min(1, "Street is required"),
+    city: z.string().min(1, "City is required"),
+    zip: z.string().min(3, "Valid ZIP code required"),
+    // You correctly identified the 2-letter ISO code
+    country: z.string().length(2, "Must be a 2-letter ISO code"), 
+  }),
+  // Missing crucial field:
+  billingEmail: z.string().email("Invalid billing email").optional(),
+});
+export type OrganizationInput = z.infer<typeof OrganizationSchema>;
