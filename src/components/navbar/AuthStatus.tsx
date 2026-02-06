@@ -27,7 +27,16 @@ export const AuthStatus = () => {
         </Link>
 
         <button
-          onClick={() => logoutAction()}
+          onClick={() => {
+            if (user?.id) {
+               try {
+                  window.sessionStorage.removeItem(`payload-prefs-synced-${user.id}`);
+               } catch (e) {
+                  // ignore error
+               }
+            }
+            logoutAction();
+          }}
           className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
           title={t("logout")}
         >

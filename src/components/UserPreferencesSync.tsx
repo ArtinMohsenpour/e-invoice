@@ -34,7 +34,7 @@ export function UserPreferencesSync({ user }: { user: User | null }) {
     let hasChanged = false;
 
     // Sync Theme
-    if (user.theme && user.theme !== "system" && user.theme !== theme) {
+    if (user.theme && user.theme !== theme) {
       setTheme(user.theme);
       hasChanged = true;
     }

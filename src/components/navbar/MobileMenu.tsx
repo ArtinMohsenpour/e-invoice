@@ -89,6 +89,13 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ navItems }) => {
                     </Link>
                     <button
                       onClick={() => {
+                        if (user?.id) {
+                           try {
+                              window.sessionStorage.removeItem(`payload-prefs-synced-${user.id}`);
+                           } catch (e) {
+                              // ignore
+                           }
+                        }
                         logoutAction();
                         handleLinkClick();
                       }}

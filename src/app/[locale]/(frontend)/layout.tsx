@@ -9,6 +9,7 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { cookies } from "next/headers";
+import { UserPreferencesSync } from "@/components/UserPreferencesSync";
 
 export const metadata = {
   description: "A blank template using Payload in a Next.js app.",
@@ -48,6 +49,7 @@ export default async function RootLayout(props: {
         >
           <NextIntlClientProvider messages={messages}>
             <AuthProvider initialUser={user}>
+              <UserPreferencesSync user={user} />
               <Navbar />
               <main className="pt-14">{children}</main>
             </AuthProvider>
