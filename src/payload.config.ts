@@ -9,6 +9,7 @@ import { Media } from "./collections/Media";
 import { Users } from "./collections/Users";
 import { Organizations } from "./collections/Organizations";
 import { CreditTransactions } from "./collections/CreditTransactions";
+import { Invitations } from "./collections/Invitations";
 import { Header } from "./globals/Header";
 import { DashboardNav } from "./globals/DashboardNav";
 
@@ -30,7 +31,7 @@ export default buildConfig({
     apiKey: process.env.RESEND_API_KEY || "",
   },),
   // Register your collections here
-  collections: [Users, Media, Organizations, CreditTransactions],
+  collections: [Users, Media, Organizations, CreditTransactions, Invitations],
   globals: [Header, DashboardNav],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",

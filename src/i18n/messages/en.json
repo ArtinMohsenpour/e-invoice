@@ -76,6 +76,31 @@
     "saving": "Saving...",
     "readOnly": "Read-only"
   },
+  "Team": {
+    "title": "Team Members",
+    "description": "Manage your organization's team and access levels.",
+    "inviteMember": "Invite Member",
+    "active": "Active",
+    "pending": "Pending",
+    "roles": {
+      "owner": "Owner",
+      "manager": "Manager",
+      "accountant": "Accountant",
+      "user": "User"
+    },
+    "inviteModal": {
+      "title": "Invite Team Member",
+      "emailLabel": "Email Address",
+      "roleLabel": "Role",
+      "cancel": "Cancel",
+      "submit": "Send Invitation",
+      "sending": "Sending..."
+    },
+    "toast": {
+      "inviteSent": "Invitation sent successfully",
+      "linkCopied": "Link copied to clipboard"
+    }
+  },
   "fields": {
     "firstName": "First Name",
     "lastName": "Last Name",

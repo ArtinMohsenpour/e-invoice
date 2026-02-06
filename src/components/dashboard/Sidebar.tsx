@@ -8,23 +8,31 @@ import { isLinkActive } from "@/lib/nav-utils";
 import type { SidebarProps } from "@/lib/types";
 
 // Extracted for performance to prevent re-renders of the list when Sidebar state changes
-function NavLinks({ items, pathname }: { items: SidebarProps["navItems"]; pathname: string }) {
+function NavLinks({
+  items,
+  pathname,
+}: {
+  items: SidebarProps["navItems"];
+  pathname: string;
+}) {
   return (
     <nav className="flex flex-col gap-1 px-2 text-sm font-medium lg:px-4">
       {items.map((item, index) => {
         // Use the centralized robust logic for active state
         const isActive = isLinkActive(pathname, item.link);
-        
+
         return (
           <Link
             key={item.link + index}
             href={item.link}
             className={`group flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted ${
-              isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground"
+              isActive
+                ? "bg-primary/10 text-primary"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {item.icon.url ? (
-              <div className="relative h-5 w-5 shrink-0">
+              <div className="relative 3xl:h-8 3xl:w-8 h-5 w-5 shrink-0">
                 <Image
                   src={item.icon.url}
                   alt={item.icon.alt}
@@ -33,7 +41,7 @@ function NavLinks({ items, pathname }: { items: SidebarProps["navItems"]; pathna
                 />
               </div>
             ) : null}
-            <span>{item.label}</span>
+            <span className="3xl:text-lg">{item.label}</span>
           </Link>
         );
       })}
@@ -44,11 +52,16 @@ function NavLinks({ items, pathname }: { items: SidebarProps["navItems"]; pathna
 function UserProfile({ user }: { user: SidebarProps["user"] }) {
   if (!user) return null;
 
-  const displayName = user.firstName && user.lastName 
-    ? `${user.firstName} ${user.lastName}`
-    : user.firstName || user.email || "User";
-    
-  const initial = (user.firstName?.charAt(0) || user.email?.charAt(0) || "U").toUpperCase();
+  const displayName =
+    user.firstName && user.lastName
+      ? `${user.firstName} ${user.lastName}`
+      : user.firstName || user.email || "User";
+
+  const initial = (
+    user.firstName?.charAt(0) ||
+    user.email?.charAt(0) ||
+    "U"
+  ).toUpperCase();
 
   return (
     <div className="mt-auto border-t p-4">
@@ -112,7 +125,7 @@ export function Sidebar({ user, navItems }: SidebarProps) {
             <div className="py-4">
               <NavLinks items={navItems} pathname={pathname} />
               <div className="mt-4 px-2">
-                 <UserProfile user={user} />
+                <UserProfile user={user} />
               </div>
             </div>
           </div>

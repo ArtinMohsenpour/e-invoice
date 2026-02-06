@@ -10,3 +10,4 @@ I have successfully updated the authentication configuration to ensure tokens ar
     *   Updated `resetPasswordAction` to set the `payload-token` cookie with `maxAge: 28800` (8 hours).
 
 The token will now effectively expire and be removed from the browser after 8 hours, or immediately upon logout.
+before doing  below prompt, consider that we use dark/light theme, we have multilanguage function, get design pattern from profile and settings pages. and you can not use shadcn. keep the code clean, where it is possible use server components.

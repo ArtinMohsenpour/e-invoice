@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     organizations: Organization;
     'credit-transactions': CreditTransaction;
+    invitations: Invitation;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,6 +83,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     organizations: OrganizationsSelect<false> | OrganizationsSelect<true>;
     'credit-transactions': CreditTransactionsSelect<false> | CreditTransactionsSelect<true>;
+    invitations: InvitationsSelect<false> | InvitationsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -218,6 +220,22 @@ export interface CreditTransaction {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "invitations".
+ */
+export interface Invitation {
+  id: number;
+  email: string;
+  orgRole: 'manager' | 'accountant';
+  organization: number | Organization;
+  token: string;
+  status?: ('pending' | 'accepted' | 'expired') | null;
+  expiresAt: string;
+  invitedBy: number | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -255,6 +273,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'credit-transactions';
         value: number | CreditTransaction;
+      } | null)
+    | ({
+        relationTo: 'invitations';
+        value: number | Invitation;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -379,6 +401,21 @@ export interface CreditTransactionsSelect<T extends boolean = true> {
   amount?: T;
   type?: T;
   description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "invitations_select".
+ */
+export interface InvitationsSelect<T extends boolean = true> {
+  email?: T;
+  orgRole?: T;
+  organization?: T;
+  token?: T;
+  status?: T;
+  expiresAt?: T;
+  invitedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
