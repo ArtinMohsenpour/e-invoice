@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import type { TeamMember, Invitation, TeamClientProps } from "@/lib/types";
 
 // Define local components to match ProfileClient style without depending on broken UI libs
 const Button = ({
@@ -56,31 +57,6 @@ const Input = ({ className, ...props }: any) => (
     {...props}
   />
 );
-
-// Define types locally
-interface TeamMember {
-  id: string | number;
-  email: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  orgRole?: "owner" | "manager" | "accountant" | "user" | string | null;
-  [key: string]: any;
-}
-
-interface Invitation {
-  id: string | number;
-  email: string;
-  orgRole?: "manager" | "accountant" | null;
-  token?: string | null;
-  status?: "pending" | "accepted" | "expired" | null;
-  organization: any;
-}
-
-interface TeamClientProps {
-  currentUser: TeamMember;
-  members: TeamMember[];
-  invitations: Invitation[];
-}
 
 export default function TeamClient({
   currentUser,
