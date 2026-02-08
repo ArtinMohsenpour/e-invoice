@@ -76,6 +76,31 @@
     "saving": "Speichern...",
     "readOnly": "Nur Lesen"
   },
+  "Team": {
+    "title": "Teammitglieder",
+    "description": "Verwalten Sie Ihr Team und Zugriffsrechte.",
+    "inviteMember": "Mitglied einladen",
+    "active": "Aktiv",
+    "pending": "Ausstehend",
+    "roles": {
+      "owner": "Inhaber",
+      "manager": "Manager",
+      "accountant": "Buchhalter",
+      "user": "Benutzer"
+    },
+    "inviteModal": {
+      "title": "Teammitglied einladen",
+      "emailLabel": "E-Mail-Adresse",
+      "roleLabel": "Rolle",
+      "cancel": "Abbrechen",
+      "submit": "Einladung senden",
+      "sending": "Senden..."
+    },
+    "toast": {
+      "inviteSent": "Einladung erfolgreich gesendet",
+      "linkCopied": "Link in die Zwischenablage kopiert"
+    }
+  },
   "fields": {
     "firstName": "Vorname",
     "lastName": "Nachname",

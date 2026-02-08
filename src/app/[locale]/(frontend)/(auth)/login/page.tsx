@@ -1,18 +1,20 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState, Suspense } from "react";
 import { loginAction } from "../../actions/auth";
 import Link from "next/link";
 import { useAuth } from "@/providers/Auth";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { AlertCircle, TriangleAlert, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-export default function LoginPage() {
+function LoginContent() {
   const [state, action, isPending] = useActionState(loginAction, null);
   const { setUser } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
   const t = useTranslations('Auth');
   const [isRedirecting, setIsRedirecting] = useState(false);
 
@@ -25,10 +27,8 @@ export default function LoginPage() {
     }
   }, [state, setUser, router]);
 
-  // Global error message (only if state.error is a string)
+  // Global error message
   const globalError = typeof state?.error === "string" ? state.error : null;
-
-  // Type guard for field errors
   const fieldErrors = typeof state?.error === "object" ? state.error : null;
 
   if (isRedirecting) {
@@ -57,13 +57,17 @@ export default function LoginPage() {
           <p className="mt-1 text-sm text-muted-foreground">
             {t('loginSubtitle')}
           </p>
+          {token && (
+             <div className="mt-2 text-xs font-medium text-amber-600 bg-amber-50 p-2 rounded-md dark:bg-amber-900/20 dark:text-amber-400">
+               Accepting invitation... Please log in.
+             </div>
+          )}
         </div>
         <form action={action} className="space-y-4" noValidate>
+          {token && <input type="hidden" name="token" value={token} />}
+          
           <div className="space-y-2">
-            <label
-              htmlFor="email"
-              className="text-sm font-medium text-foreground"
-            >
+            <label htmlFor="email" className="text-sm font-medium text-foreground">
               {t('emailLabel')}
             </label>
             <input
@@ -76,8 +80,7 @@ export default function LoginPage() {
               defaultValue={state?.fields?.email as string}
               className={cn(
                 "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-                fieldErrors?.email &&
-                  "border-destructive focus:ring-destructive",
+                fieldErrors?.email && "border-destructive focus:ring-destructive",
               )}
             />
             {fieldErrors?.email && (
@@ -89,10 +92,7 @@ export default function LoginPage() {
           </div>
 
           <div className="space-y-2">
-            <label
-              htmlFor="password"
-              className="text-sm font-medium text-foreground"
-            >
+            <label htmlFor="password" className="text-sm font-medium text-foreground">
               {t('passwordLabel')}
             </label>
             <input
@@ -105,8 +105,7 @@ export default function LoginPage() {
               defaultValue={state?.fields?.password as string}
               className={cn(
                 "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-                fieldErrors?.password &&
-                  "border-destructive focus:ring-destructive",
+                fieldErrors?.password && "border-destructive focus:ring-destructive",
               )}
             />
             {fieldErrors?.password && (
@@ -118,11 +117,7 @@ export default function LoginPage() {
           </div>
 
           {globalError && (
-            <div
-              className="flex items-center gap-2 rounded-md bg-destructive/15 p-3 text-sm font-medium text-destructive"
-              role="alert"
-              aria-live="polite"
-            >
+            <div className="flex items-center gap-2 rounded-md bg-destructive/15 p-3 text-sm font-medium text-destructive" role="alert" aria-live="polite">
               <TriangleAlert className="h-4 w-4" />
               <p>{globalError}</p>
             </div>
@@ -137,23 +132,25 @@ export default function LoginPage() {
           </button>
         </form>
         <div className="mt-6 flex flex-col gap-2 text-center text-sm">
-          <Link
-            href="/forgot-password"
-            className="text-muted-foreground hover:underline"
-          >
+          <Link href="/forgot-password" className="text-muted-foreground hover:underline">
             {t('forgotPassword')}
           </Link>
           <div className="text-muted-foreground">
             {t('noAccount')}{" "}
-            <Link
-              href="/signup"
-              className="font-medium text-primary hover:underline"
-            >
+            <Link href={`/signup${token ? `?token=${token}` : ''}`} className="font-medium text-primary hover:underline">
               {t('submitSignup')}
             </Link>
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen w-full items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

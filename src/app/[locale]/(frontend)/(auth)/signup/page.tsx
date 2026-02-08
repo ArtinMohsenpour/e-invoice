@@ -1,16 +1,19 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState, Suspense } from "react";
 import { signupAction } from "../../actions/auth";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { AlertCircle, CheckCircle, TriangleAlert } from "lucide-react";
+import { AlertCircle, CheckCircle, TriangleAlert, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 
-export default function SignupPage() {
+function SignupContent() {
   const [state, action, isPending] = useActionState(signupAction, null);
   const [isSuccess, setIsSuccess] = useState(false);
   const t = useTranslations('Auth');
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
 
   useEffect(() => {
     if (state?.success) {
@@ -18,10 +21,7 @@ export default function SignupPage() {
     }
   }, [state]);
 
-  // Global error message (only if state.error is a string)
   const globalError = typeof state?.error === "string" ? state.error : null;
-
-  // Type guard for field errors
   const fieldErrors = typeof state?.error === "object" ? state.error : null;
 
   if (isSuccess) {
@@ -56,14 +56,18 @@ export default function SignupPage() {
           <p className="mt-1 text-sm text-muted-foreground">
             {t('signupSubtitle')}
           </p>
+          {token && (
+             <div className="mt-2 text-xs font-medium text-amber-600 bg-amber-50 p-2 rounded-md dark:bg-amber-900/20 dark:text-amber-400">
+               Signing up via invitation
+             </div>
+          )}
         </div>
         <form action={action} className="space-y-4" noValidate>
+          {token && <input type="hidden" name="token" value={token} />}
+          
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label
-                htmlFor="firstName"
-                className="text-sm font-medium text-foreground"
-              >
+              <label htmlFor="firstName" className="text-sm font-medium text-foreground">
                 {t('firstNameLabel')}
               </label>
               <input
@@ -75,24 +79,18 @@ export default function SignupPage() {
                 defaultValue={state?.fields?.firstName as string}
                 className={cn(
                   "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-                  fieldErrors?.firstName &&
-                    "border-destructive focus:ring-destructive",
+                  fieldErrors?.firstName && "border-destructive focus:ring-destructive",
                 )}
               />
               {fieldErrors?.firstName && (
                 <div className="flex items-center gap-2 mt-1 text-destructive">
                   <AlertCircle className="h-4 w-4" />
-                  <p className="text-xs font-medium">
-                    {fieldErrors.firstName[0]}
-                  </p>
+                  <p className="text-xs font-medium">{fieldErrors.firstName[0]}</p>
                 </div>
               )}
             </div>
             <div className="space-y-2">
-              <label
-                htmlFor="lastName"
-                className="text-sm font-medium text-foreground"
-              >
+              <label htmlFor="lastName" className="text-sm font-medium text-foreground">
                 {t('lastNameLabel')}
               </label>
               <input
@@ -104,26 +102,20 @@ export default function SignupPage() {
                 defaultValue={state?.fields?.lastName as string}
                 className={cn(
                   "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-                  fieldErrors?.lastName &&
-                    "border-destructive focus:ring-destructive",
+                  fieldErrors?.lastName && "border-destructive focus:ring-destructive",
                 )}
               />
               {fieldErrors?.lastName && (
                 <div className="flex items-center gap-2 mt-1 text-destructive">
                   <AlertCircle className="h-4 w-4" />
-                  <p className="text-xs font-medium">
-                    {fieldErrors.lastName[0]}
-                  </p>
+                  <p className="text-xs font-medium">{fieldErrors.lastName[0]}</p>
                 </div>
               )}
             </div>
           </div>
 
           <div className="space-y-2">
-            <label
-              htmlFor="email"
-              className="text-sm font-medium text-foreground"
-            >
+            <label htmlFor="email" className="text-sm font-medium text-foreground">
               {t('emailLabel')}
             </label>
             <input
@@ -136,8 +128,7 @@ export default function SignupPage() {
               defaultValue={state?.fields?.email as string}
               className={cn(
                 "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-                fieldErrors?.email &&
-                  "border-destructive focus:ring-destructive",
+                fieldErrors?.email && "border-destructive focus:ring-destructive",
               )}
             />
             {fieldErrors?.email && (
@@ -149,10 +140,7 @@ export default function SignupPage() {
           </div>
 
           <div className="space-y-2">
-            <label
-              htmlFor="password"
-              className="text-sm font-medium text-foreground"
-            >
+            <label htmlFor="password" className="text-sm font-medium text-foreground">
               {t('passwordLabel')}
             </label>
             <input
@@ -165,8 +153,7 @@ export default function SignupPage() {
               defaultValue={state?.fields?.password as string}
               className={cn(
                 "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-                fieldErrors?.password &&
-                  "border-destructive focus:ring-destructive",
+                fieldErrors?.password && "border-destructive focus:ring-destructive",
               )}
             />
             {fieldErrors?.password && (
@@ -178,11 +165,7 @@ export default function SignupPage() {
           </div>
 
           {globalError && (
-            <div
-              className="flex items-center gap-2 rounded-md bg-destructive/15 p-3 text-sm font-medium text-destructive"
-              role="alert"
-              aria-live="polite"
-            >
+            <div className="flex items-center gap-2 rounded-md bg-destructive/15 p-3 text-sm font-medium text-destructive" role="alert" aria-live="polite">
               <TriangleAlert className="h-4 w-4" />
               <p>{globalError}</p>
             </div>
@@ -200,7 +183,7 @@ export default function SignupPage() {
           <div className="text-muted-foreground">
             {t('haveAccount')}{" "}
             <Link
-              href="/login"
+              href={`/login${token ? `?token=${token}` : ''}`}
               className="font-medium text-primary hover:underline"
             >
               {t('submitLogin')}
@@ -209,5 +192,13 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen w-full items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+      <SignupContent />
+    </Suspense>
   );
 }

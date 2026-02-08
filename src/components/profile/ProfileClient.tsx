@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTransition } from "react";
+import { useTransition, useState, useEffect } from "react";
 import {
   updateUserProfile,
   updateOrganization,
@@ -14,6 +14,8 @@ import {
   User as UserIcon,
   Building,
   AlertTriangle,
+  Check,
+  Shield,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { CountrySelector } from "@/components/ui/CountrySelector";
@@ -35,6 +37,31 @@ export default function ProfileClient({
   const [isPendingUser, startTransitionUser] = useTransition();
   const [isPendingOrg, startTransitionOrg] = useTransition();
   const [isPendingDelete, startTransitionDelete] = useTransition();
+  const [userSuccess, setUserSuccess] = useState(false);
+  const [orgSuccess, setOrgSuccess] = useState(false);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
+
+  const showToast = (message: string, type: "success" | "error") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  useEffect(() => {
+    if (userSuccess) {
+      const timer = setTimeout(() => setUserSuccess(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [userSuccess]);
+
+  useEffect(() => {
+    if (orgSuccess) {
+      const timer = setTimeout(() => setOrgSuccess(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [orgSuccess]);
 
   // User Form
   const userForm = useForm<ProfileInput>({
@@ -63,20 +90,25 @@ export default function ProfileClient({
   });
 
   const onUserSubmit = (data: ProfileInput) => {
+    setUserSuccess(false);
     startTransitionUser(async () => {
       const result = await updateUserProfile(user.id, data);
       if (!result.success) {
-        alert(result.error);
+        showToast(result.error as string, "error");
+      } else {
+        setUserSuccess(true);
       }
     });
   };
 
   const onOrgSubmit = (data: OrganizationInput) => {
+    setOrgSuccess(false);
     startTransitionOrg(async () => {
       const result = await updateOrganization(organization?.id || null, data);
       if (!result.success) {
-        alert(result.error);
+        showToast(result.error as string, "error");
       } else {
+        setOrgSuccess(true);
         // If creating for the first time, refresh to get the new state
         if (!organization) {
           router.refresh();
@@ -99,23 +131,39 @@ export default function ProfileClient({
             phoneNumber: "",
             address: { street: "", city: "", zip: "", country: "" },
           });
+          showToast("Organization deleted", "success");
         } else {
-          alert(result.error);
+          showToast(result.error as string, "error");
         }
       });
     }
   };
 
   // If no organization, user is creating one, so they are effectively the "owner" of the process
-  const canEditOrg =
-    !organization ||
-    user.orgRole === "owner" ||
-    user.orgRole === "manager" ||
-    user.orgRole === "accountant";
+  // Otherwise, strictly check if they are the 'owner'
+  const canEditOrg = !organization || user.orgRole === "owner";
   const isOwner = user.orgRole === "owner";
 
   return (
     <div className="space-y-6 bg-background">
+      {/* Toast Notification (Only for errors now, or general msgs) */}
+      {toast && (
+        <div
+          className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg border backdrop-blur-md flex items-center gap-2 animate-in slide-in-from-right-10 ${
+            toast.type === "success"
+              ? "bg-green-50/90 border-green-200 text-green-800 dark:bg-green-900/90 dark:border-green-800 dark:text-green-100"
+              : "bg-red-50/90 border-red-200 text-red-800 dark:bg-red-900/90 dark:border-red-800 dark:text-red-100"
+          }`}
+        >
+          {toast.type === "success" ? (
+            <Check className="w-4 h-4" />
+          ) : (
+            <Shield className="w-4 h-4" />
+          )}
+          <span className="text-sm font-medium">{toast.message}</span>
+        </div>
+      )}
+
       <div>
         <h3 className="text-lg font-medium text-foreground">
           {t("Profile.title")}
@@ -197,16 +245,29 @@ export default function ProfileClient({
             </div>
 
             <div className="flex justify-end pt-4">
-              <button
-                type="submit"
-                disabled={isPendingUser}
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-              >
-                {isPendingUser && (
-                  <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                )}
-                {t("Profile.saveChanges")}
-              </button>
+              <div className="relative flex items-center">
+                <div
+                  className={cn(
+                    "absolute right-full top-1/2 -translate-y-1/2 mr-4 flex items-center gap-2 whitespace-nowrap text-sm font-medium text-green-600 transition-all duration-500 ease-in-out",
+                    userSuccess
+                      ? "opacity-100 translate-x-0"
+                      : "opacity-0 translate-x-4 pointer-events-none"
+                  )}
+                >
+                  <Check className="h-4 w-4" />
+                  {t("Settings.savedSuccessfully")}
+                </div>
+                <button
+                  type="submit"
+                  disabled={isPendingUser}
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+                >
+                  {isPendingUser && (
+                    <Loader2 className="animate-spin mr-2 h-4 w-4" />
+                  )}
+                  {t("Profile.saveChanges")}
+                </button>
+              </div>
             </div>
           </form>
         </div>
@@ -227,7 +288,7 @@ export default function ProfileClient({
                 </p>
               </div>
               {!canEditOrg && (
-                <span className="ml-auto px-2 py-1 text-xs font-medium text-muted-foreground bg-muted rounded-full">
+                <span className="ml-auto min-w-fit px-2 py-1 text-xs font-medium text-muted-foreground bg-muted rounded-full">
                   {t("Profile.readOnly")}
                 </span>
               )}
@@ -247,7 +308,7 @@ export default function ProfileClient({
                     className={cn(
                       "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all",
                       orgForm.formState.errors.name &&
-                        "border-destructive focus-visible:ring-destructive"
+                        "border-destructive focus-visible:ring-destructive",
                     )}
                   />
                   {orgForm.formState.errors.name && (
@@ -266,7 +327,7 @@ export default function ProfileClient({
                     className={cn(
                       "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all",
                       orgForm.formState.errors.taxId &&
-                        "border-destructive focus-visible:ring-destructive"
+                        "border-destructive focus-visible:ring-destructive",
                     )}
                   />
                   {orgForm.formState.errors.taxId && (
@@ -287,7 +348,7 @@ export default function ProfileClient({
                   className={cn(
                     "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all",
                     orgForm.formState.errors.phoneNumber &&
-                      "border-destructive focus-visible:ring-destructive"
+                      "border-destructive focus-visible:ring-destructive",
                   )}
                 />
                 {orgForm.formState.errors.phoneNumber && (
@@ -307,7 +368,7 @@ export default function ProfileClient({
                   className={cn(
                     "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all",
                     orgForm.formState.errors.address?.street &&
-                      "border-destructive focus-visible:ring-destructive"
+                      "border-destructive focus-visible:ring-destructive",
                   )}
                 />
                 {orgForm.formState.errors.address?.street && (
@@ -328,7 +389,7 @@ export default function ProfileClient({
                     className={cn(
                       "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all",
                       orgForm.formState.errors.address?.city &&
-                        "border-destructive focus-visible:ring-destructive"
+                        "border-destructive focus-visible:ring-destructive",
                     )}
                   />
                   {orgForm.formState.errors.address?.city && (
@@ -347,7 +408,7 @@ export default function ProfileClient({
                     className={cn(
                       "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all",
                       orgForm.formState.errors.address?.zip &&
-                        "border-destructive focus-visible:ring-destructive"
+                        "border-destructive focus-visible:ring-destructive",
                     )}
                   />
                   {orgForm.formState.errors.address?.zip && (
@@ -382,16 +443,29 @@ export default function ProfileClient({
 
               {canEditOrg && (
                 <div className="flex justify-end pt-4">
-                  <button
-                    type="submit"
-                    disabled={isPendingOrg}
-                    className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-                  >
-                    {isPendingOrg && (
-                      <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                    )}
-                    {t("Profile.saveChanges")}
-                  </button>
+                  <div className="relative flex items-center">
+                    <div
+                      className={cn(
+                        "absolute right-full top-1/2 -translate-y-1/2 mr-4 flex items-center gap-2 whitespace-nowrap text-sm font-medium text-green-600 transition-all duration-500 ease-in-out",
+                        orgSuccess
+                          ? "opacity-100 translate-x-0"
+                          : "opacity-0 translate-x-4 pointer-events-none"
+                      )}
+                    >
+                      <Check className="h-4 w-4" />
+                      {t("Settings.savedSuccessfully")}
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={isPendingOrg}
+                      className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+                    >
+                      {isPendingOrg && (
+                        <Loader2 className="animate-spin mr-2 h-4 w-4" />
+                      )}
+                      {t("Profile.saveChanges")}
+                    </button>
+                  </div>
                 </div>
               )}
             </form>

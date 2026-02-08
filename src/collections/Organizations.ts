@@ -20,9 +20,8 @@ export const Organizations: CollectionConfig = {
       if (!user) return false
       if (user.role === 'admin') return true
 
-      // Allow Owner, Manager, Accountant to update their own org
-      // Assuming 'orgRole' is on the user
-      if (user.orgRole && ['owner', 'manager', 'accountant'].includes(user.orgRole)) {
+      // ONLY Owner can update their own org
+      if (user.orgRole === 'owner') {
         return {
           id: {
             equals: typeof user.organization === 'object' ? user.organization?.id : user.organization,
