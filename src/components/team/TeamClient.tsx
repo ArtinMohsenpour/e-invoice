@@ -17,6 +17,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { TeamMember, Invitation, TeamClientProps } from "@/lib/types";
+import { TeamInviteSchema } from "@/lib/validators";
 
 // Define local components to match ProfileClient style without depending on broken UI libs
 const Button = ({
@@ -87,13 +88,24 @@ export default function TeamClient({
 
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate invite data using schema
+    const validationResult = TeamInviteSchema.safeParse({
+      email,
+      orgRole: role,
+    });
+    if (!validationResult.success) {
+      showToast(validationResult.error.issues[0].message, "error");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const res = await fetch("/api/invite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, orgRole: role }),
+        body: JSON.stringify(validationResult.data),
       });
 
       const data = await res.json();
@@ -351,7 +363,7 @@ export default function TeamClient({
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="flex-1 lg:flex-none cursor-pointer h-11 px-6 min-w-[120px]"
+                      className="flex-1 lg:flex-none cursor-pointer h-11 px-6 min-w-30"
                     >
                       {isLoading ? (
                         <Loader2 className="animate-spin w-4 h-4 mr-2" />
